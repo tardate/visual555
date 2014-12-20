@@ -13,15 +13,39 @@ class root.Visual555
       false
 
   constructor: (@container) ->
+    @calculator = new root.Calculator555()
     @context = @container.get(0).getContext("2d")
     @apply_defaults()
     @draw_circuit()
+    @init_animation_loop()
     true
 
   apply_defaults: ->
     @context.translate(0.5, 0.5)
     @context.font = '14px monospace'
     @context.textBaseline = 'top'
+
+  init_animation_loop: ->
+    # setup animation loop
+    instance = @
+    output_high = true
+    f = ()->
+      if instance.calculator.time_high > 0
+        t = if output_high
+          instance.led_on()
+          instance.calculator.time_high
+        else
+          instance.led_off()
+          instance.calculator.time_low
+        output_high = !output_high
+      else
+        t = 500
+        output_high = false
+      setTimeout(f,t)
+    f()
+
+  recalc: (values)->
+    @calculator.recalc(values)
 
   draw_circuit: ->
     y_vcc = 30

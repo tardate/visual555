@@ -4,7 +4,6 @@ root = exports ? this
 class root.AppController
 
   constructor: (@container,canvas) ->
-    @calculator = new root.Calculator555()
     @visualizer = root.Visual555.get_instance($(canvas))
     @init()
 
@@ -16,35 +15,20 @@ class root.AppController
       instance.recalc()
       true
     )
-    # setup animation loop
-    output_high = true
-    f = ()->
-      if instance.calculator.time_high > 0
-        t = if output_high
-          instance.visualizer.led_on()
-          instance.calculator.time_high
-        else
-          instance.visualizer.led_off()
-          instance.calculator.time_low
-        output_high = !output_high
-      else
-        t = 500
-        output_high = false
-      setTimeout(f,t)
-    f()
 
   recalc: ->
-    @calculator.r1 = parseFloat( $('#R1',@container).val() )
-    @calculator.r2 = parseFloat( $('#R2',@container).val() )
-    @calculator.c = parseFloat( $('#C',@container).val() )
-    @calculator.recalc()
+    values = @visualizer.recalc({
+      r1: parseFloat( $('#R1',@container).val() ),
+      r2: parseFloat( $('#R2',@container).val() ),
+      c: parseFloat( $('#C',@container).val() )
+    })
 
-    $('#frequency',@container).html( @calculator.frequency.toFixed(3) + ' Hz' )
-    $('#time_high',@container).html( @calculator.time_high.toFixed(3) + ' ms' )
-    $('#time_low',@container).html( @calculator.time_low.toFixed(3) + ' ms' )
-    $('#cycle_time',@container).html( @calculator.cycle_time.toFixed(3) + ' ms' )
-    $('#duty_cycle',@container).html( @calculator.duty_cycle.toFixed(3) + ' %' )
-    $('#permalink',@container).attr('href', '?r1=' + @calculator.r1 + '&r2=' + @calculator.r2 + '&c=' + @calculator.c )
+    $('#frequency',@container).html( values.frequency.toFixed(3) + ' Hz' )
+    $('#time_high',@container).html( values.time_high.toFixed(3) + ' ms' )
+    $('#time_low',@container).html( values.time_low.toFixed(3) + ' ms' )
+    $('#cycle_time',@container).html( values.cycle_time.toFixed(3) + ' ms' )
+    $('#duty_cycle',@container).html( values.duty_cycle.toFixed(3) + ' %' )
+    $('#permalink',@container).attr('href', '?r1=' + values.r1 + '&r2=' + values.r2 + '&c=' +values.c )
 
   snaffleUrlParams: ->
     # if present, initialise fields based on url params

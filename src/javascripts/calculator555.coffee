@@ -22,9 +22,25 @@ class root.Calculator555
     @duty_cycle = 0
 
 
-  recalc: ->
+  recalc: (values)->
+    if v = values.r1
+      @r1 = v
+    if v = values.r2
+      @r2 = v
+    if v = values.c
+      @c = v
     @frequency = 1.44 * 1000 / ( @r1 + 2 * @r2 ) / @c
     @time_high = 0.693 * ( @r1 + @r2 ) * @c
     @time_low  = 0.693 * @r2 * @c
     @cycle_time = @time_high + @time_low
     @duty_cycle = @time_high / @cycle_time * 100.0
+    {
+      r1: @r1,
+      r2: @r2,
+      c: @c,
+      frequency: @frequency,
+      time_high: @time_high,
+      time_low: @time_low,
+      cycle_time: @cycle_time,
+      duty_cycle: @duty_cycle
+    }

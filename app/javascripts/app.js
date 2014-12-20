@@ -6,46 +6,34 @@
   root.AppController = (function() {
     function AppController(container, canvas) {
       this.container = container;
-      this.calculator = new root.Calculator555();
       this.visualizer = root.Visual555.get_instance($(canvas));
       this.init();
     }
 
     AppController.prototype.init = function() {
-      var f, instance, output_high;
+      var instance;
       instance = this;
       this.snaffleUrlParams();
       this.recalc();
-      $('.form-control', this.container).on('change keyup', function() {
+      return $('.form-control', this.container).on('change keyup', function() {
         instance.recalc();
         return true;
       });
-      output_high = true;
-      f = function() {
-        var t;
-        if (instance.calculator.time_high > 0) {
-          t = output_high ? (instance.visualizer.led_on(), instance.calculator.time_high) : (instance.visualizer.led_off(), instance.calculator.time_low);
-          output_high = !output_high;
-        } else {
-          t = 500;
-          output_high = false;
-        }
-        return setTimeout(f, t);
-      };
-      return f();
     };
 
     AppController.prototype.recalc = function() {
-      this.calculator.r1 = parseFloat($('#R1', this.container).val());
-      this.calculator.r2 = parseFloat($('#R2', this.container).val());
-      this.calculator.c = parseFloat($('#C', this.container).val());
-      this.calculator.recalc();
-      $('#frequency', this.container).html(this.calculator.frequency.toFixed(3) + ' Hz');
-      $('#time_high', this.container).html(this.calculator.time_high.toFixed(3) + ' ms');
-      $('#time_low', this.container).html(this.calculator.time_low.toFixed(3) + ' ms');
-      $('#cycle_time', this.container).html(this.calculator.cycle_time.toFixed(3) + ' ms');
-      $('#duty_cycle', this.container).html(this.calculator.duty_cycle.toFixed(3) + ' %');
-      return $('#permalink', this.container).attr('href', '?r1=' + this.calculator.r1 + '&r2=' + this.calculator.r2 + '&c=' + this.calculator.c);
+      var values;
+      values = this.visualizer.recalc({
+        r1: parseFloat($('#R1', this.container).val()),
+        r2: parseFloat($('#R2', this.container).val()),
+        c: parseFloat($('#C', this.container).val())
+      });
+      $('#frequency', this.container).html(values.frequency.toFixed(3) + ' Hz');
+      $('#time_high', this.container).html(values.time_high.toFixed(3) + ' ms');
+      $('#time_low', this.container).html(values.time_low.toFixed(3) + ' ms');
+      $('#cycle_time', this.container).html(values.cycle_time.toFixed(3) + ' ms');
+      $('#duty_cycle', this.container).html(values.duty_cycle.toFixed(3) + ' %');
+      return $('#permalink', this.container).attr('href', '?r1=' + values.r1 + '&r2=' + values.r2 + '&c=' + values.c);
     };
 
     AppController.prototype.snaffleUrlParams = function() {
@@ -95,9 +83,11 @@
 
     function Visual555(container) {
       this.container = container;
+      this.calculator = new root.Calculator555();
       this.context = this.container.get(0).getContext("2d");
       this.apply_defaults();
       this.draw_circuit();
+      this.init_animation_loop();
       true;
     }
 
@@ -105,6 +95,28 @@
       this.context.translate(0.5, 0.5);
       this.context.font = '14px monospace';
       return this.context.textBaseline = 'top';
+    };
+
+    Visual555.prototype.init_animation_loop = function() {
+      var f, instance, output_high;
+      instance = this;
+      output_high = true;
+      f = function() {
+        var t;
+        if (instance.calculator.time_high > 0) {
+          t = output_high ? (instance.led_on(), instance.calculator.time_high) : (instance.led_off(), instance.calculator.time_low);
+          output_high = !output_high;
+        } else {
+          t = 500;
+          output_high = false;
+        }
+        return setTimeout(f, t);
+      };
+      return f();
+    };
+
+    Visual555.prototype.recalc = function(values) {
+      return this.calculator.recalc(values);
     };
 
     Visual555.prototype.draw_circuit = function() {
