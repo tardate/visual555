@@ -102,9 +102,9 @@
       instance = this;
       output_high = true;
       f = function() {
-        var t;
-        if (instance.calculator.time_high > 0) {
-          t = output_high ? (instance.led_on(), instance.calculator.time_high) : (instance.led_off(), instance.calculator.time_low);
+        var t, th;
+        if ((th = instance.calculator.time_high()) > 0) {
+          t = output_high ? (instance.led_on(), th) : (instance.led_off(), instance.calculator.time_low());
           output_high = !output_high;
         } else {
           t = 500;

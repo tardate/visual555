@@ -30,13 +30,13 @@ class root.Visual555
     instance = @
     output_high = true
     f = ()->
-      if instance.calculator.time_high > 0
+      if (th = instance.calculator.time_high() ) > 0
         t = if output_high
           instance.led_on()
-          instance.calculator.time_high
+          th
         else
           instance.led_off()
-          instance.calculator.time_low
+          instance.calculator.time_low()
         output_high = !output_high
       else
         t = 500
