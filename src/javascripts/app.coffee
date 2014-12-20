@@ -48,12 +48,9 @@ class root.AppController
 
   snaffleUrlParams: ->
     # if present, initialise fields based on url params
-    if value = @param('r1')
-      $('#R1',@container).val(value)
-    if value = @param('r2')
-      $('#R2',@container).val(value)
-    if value = @param('c')
-      $('#C',@container).val(value)
+    $('#R1',@container).val(@param('r1') || 1)
+    $('#R2',@container).val(@param('r2') || 330)
+    $('#C',@container).val(@param('c') || 2.2)
 
   param: (name)->
     if values = (new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)

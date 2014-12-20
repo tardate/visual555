@@ -49,16 +49,9 @@
     };
 
     AppController.prototype.snaffleUrlParams = function() {
-      var value;
-      if (value = this.param('r1')) {
-        $('#R1', this.container).val(value);
-      }
-      if (value = this.param('r2')) {
-        $('#R2', this.container).val(value);
-      }
-      if (value = this.param('c')) {
-        return $('#C', this.container).val(value);
-      }
+      $('#R1', this.container).val(this.param('r1') || 1);
+      $('#R2', this.container).val(this.param('r2') || 330);
+      return $('#C', this.container).val(this.param('c') || 2.2);
     };
 
     AppController.prototype.param = function(name) {
