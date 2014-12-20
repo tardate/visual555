@@ -15,6 +15,16 @@ Use grunt to just-in-time compile coffeescript sources as you work:
     $ grunt watch
 
 
+## Sinatra Web App
+
+A sinatra web app is included in this repo for the purpose of hosting at [visual555.tardate.com](http://visual555.tardate.com).
+
+To run the app locally:
+
+    $ bundle install
+    $ ruby web_app.rb
+
+
 ## Contributing
 
 1. Fork it ( https://github.com/tardate/visual555/fork )
