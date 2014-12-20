@@ -28,71 +28,139 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-12">
 
-        <form role="form" id="visual555" class="form-horizontal">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">555 Timer A-stable Oscillator</h3>
+          </div>
+          <div class="panel-body">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4">
 
-          <div class="form-group">
-            <label for="R1" class="col-sm-6 control-label">R1 (k&Omega;)</label>
-            <div class="col-sm-6">
-              <input type="input" class="form-control" id="R1" placeholder="Enter R1">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="R2" class="col-sm-6 control-label">R2 (k&Omega;)</label>
-            <div class="col-sm-6">
-              <input type="input" class="form-control" id="R2" placeholder="Enter R2">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="C" class="col-sm-6 control-label">C1 (&mu;F)</label>
-            <div class="col-sm-6">
-              <input type="input" class="form-control" id="C" placeholder="Enter C">
-            </div>
-          </div>
-          <table class="table">
-            <caption></caption>
-            <tbody>
-              <tr>
-                <td>Frequency</td>
-                <td id="frequency"></td>
-              </tr>
-              <tr>
-                <td>Cycle Time</td>
-                <td id="cycle_time"></td>
-              </tr>
-              <tr>
-                <td>Time High</td>
-                <td id="time_high"></td>
-              </tr>
-              <tr>
-                <td>Time Low</td>
-                <td id="time_low"></td>
-              </tr>
-              <tr>
-                <td>Duty Cycle</td>
-                <td id="duty_cycle"></td>
-              </tr>
-            </tbody>
-          </table>
-          <a id="permalink" href="">
-            <i class="fa fa-link"></i>
-            get the permalink to this solution
-          </a>
-        </form>
+                  <form role="form" id="visual555" class="form-horizontal">
 
+                    <div class="form-group">
+                      <label for="R1" class="col-sm-6 control-label">R1 (k&Omega;)</label>
+                      <div class="col-sm-6">
+                        <input type="input" class="form-control" id="R1" placeholder="Enter R1">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="R2" class="col-sm-6 control-label">R2 (k&Omega;)</label>
+                      <div class="col-sm-6">
+                        <input type="input" class="form-control" id="R2" placeholder="Enter R2">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="C" class="col-sm-6 control-label">C1 (&mu;F)</label>
+                      <div class="col-sm-6">
+                        <input type="input" class="form-control" id="C" placeholder="Enter C">
+                      </div>
+                    </div>
+                    <table class="table">
+                      <caption></caption>
+                      <tbody>
+                        <tr>
+                          <td>Frequency</td>
+                          <td id="frequency"></td>
+                        </tr>
+                        <tr>
+                          <td>Cycle Time</td>
+                          <td id="cycle_time"></td>
+                        </tr>
+                        <tr>
+                          <td>Time High</td>
+                          <td id="time_high"></td>
+                        </tr>
+                        <tr>
+                          <td>Time Low</td>
+                          <td id="time_low"></td>
+                        </tr>
+                        <tr>
+                          <td>Duty Cycle</td>
+                          <td id="duty_cycle"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <a id="permalink" href="">
+                      <i class="fa fa-link"></i>
+                      get the permalink to this solution
+                    </a>
+                  </form>
+                </div>
+                <div class="col-md-8">
+                  <canvas id="visual555_canvas" width="800" height="400">
+                    Your browser does not support HTML5 Canvas.
+                  </canvas>
+                </div>
+
+              </div>
+            </div>
+
+
+          </div>
+        </div>
       </div>
 
-      <div class="col-md-8">
-
-        <canvas id="visual555_canvas" width="800" height="400">
-          Your browser does not support HTML5 Canvas.
-        </canvas>
-
-      </div>
 
 
     </div>
+
+    <div class="row">
+      <div class="col-md-6">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">About this Page</h3>
+          </div>
+          <div class="panel-body">
+            <p>
+              The 555 timer chip has been around since the 70s, so does the world really need another website for calculating the circuit values?
+            </p>
+
+            <p>
+              <strong>No!</strong> But I made one anyway &hellip; it's largely an excuse to play around with HTML5 canvas and coffeescript!
+              All the source code for this page is on <a href="https://github.com/tardate/visual555">github</a>.
+            </p>
+
+            <p>
+              For an example of a 555 circuit hooked up with Arduino and Processing, check out the
+              <a href="https://github.com/tardate/LittleArduinoProjects/tree/master/555Timer/AstableOscillator">AstableOscillator</a> project,
+              part of the
+              <a href="https://github.com/tardate/LittleArduinoProjects">LittleArduinoProjects</a> collection.
+            </p>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Datasheets and References</h3>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>
+                <a href="http://www.futurlec.com/Linear/LM555CN.shtml">LM555 Datasheet</a>
+              </li>
+              <li>
+                <a href="http://www.amazon.com/gp/product/0750672838/ref=as_li_tl?ie=UTF8&camp=1789&creative=390957&creativeASIN=0750672838&linkCode=as2&tag=itsaprli-20&linkId=D6X64MWAYQPEYQJC">Beginning Analog Electronics through Projects</a>
+              </li>
+              <li>
+                <a href="http://www.electroschematics.com/555-circuits/">119 x 555 Timer Circuits</a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
 
