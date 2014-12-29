@@ -17,6 +17,7 @@ class root.AppController
     )
 
   recalc: ->
+    return unless @visualizer
     values = @visualizer.recalc({
       r1: parseFloat( $('#R1',@container).val() ),
       r2: parseFloat( $('#R2',@container).val() ),

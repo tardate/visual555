@@ -23,6 +23,9 @@
 
     AppController.prototype.recalc = function() {
       var values;
+      if (!this.visualizer) {
+        return;
+      }
       values = this.visualizer.recalc({
         r1: parseFloat($('#R1', this.container).val()),
         r2: parseFloat($('#R2', this.container).val()),
