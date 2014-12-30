@@ -16,7 +16,7 @@ module.exports = (grunt)->
       compile: {
         files: {
           'app/javascripts/calculator555.js': 'src/javascripts/calculator555.coffee',
-          'app/javascripts/app.js': ['src/javascripts/app.coffee', 'src/javascripts/visual555.coffee' ]
+          'app/javascripts/app.js': ['src/javascripts/app.coffee', 'src/javascripts/components.coffee', 'src/javascripts/visual555.coffee' ]
         }
       }
     },

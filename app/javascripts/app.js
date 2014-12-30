@@ -63,6 +63,445 @@
 }).call(this);
 
 (function() {
+  var root,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
+
+  root.Component = (function() {
+    function Component(settings) {
+      this.values = this.base_defaults();
+      $.extend(this.values, this.component_defaults());
+      if (settings) {
+        $.extend(this.values, settings);
+      }
+      this.pins = this.pin_positions();
+    }
+
+    Component.prototype.base_defaults = function() {
+      return {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        orientation: 0,
+        lineWidth: 1,
+        connectorStandoff: 10,
+        label: '',
+        font: '14px monospace',
+        textBaseline: 'top'
+      };
+    };
+
+    Component.prototype.component_defaults = function() {
+      return {};
+    };
+
+    Component.prototype.draw = function(context) {};
+
+    Component.prototype.pin_position = function(pin) {
+      return this.pins[pin];
+    };
+
+    Component.prototype.pin_positions = function() {
+      return {};
+    };
+
+    return Component;
+
+  })();
+
+  root.Resistor = (function(_super) {
+    __extends(Resistor, _super);
+
+    function Resistor() {
+      return Resistor.__super__.constructor.apply(this, arguments);
+    }
+
+    Resistor.prototype.component_defaults = function() {
+      return {
+        width: 10,
+        height: 60
+      };
+    };
+
+    Resistor.prototype.pin_positions = function() {
+      var pp;
+      pp = {};
+      pp['1'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y
+      };
+      pp['2'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y + this.values.height
+      };
+      return pp;
+    };
+
+    Resistor.prototype.draw = function(context) {
+      context.beginPath();
+      context.strokeStyle = 'black';
+      context.fillStyle = 'white';
+      context.rect(this.values.x, this.values.y + this.values.connectorStandoff, this.values.width, this.values.height - 2 * this.values.connectorStandoff);
+      context.fill();
+      context.stroke();
+      context.closePath();
+      context.beginPath();
+      context.strokeStyle = 'black';
+      context.fillStyle = 'black';
+      context.fillText(this.values.label, this.values.x + this.values.width + 3, this.values.y + this.values.height / 2 - 7);
+      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
+      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
+      context.stroke();
+      context.closePath();
+    };
+
+    return Resistor;
+
+  })(root.Component);
+
+  root.CeramicCapacitor = (function(_super) {
+    __extends(CeramicCapacitor, _super);
+
+    function CeramicCapacitor() {
+      return CeramicCapacitor.__super__.constructor.apply(this, arguments);
+    }
+
+    CeramicCapacitor.prototype.component_defaults = function() {
+      return {
+        width: 10,
+        height: 25,
+        lineWidth: 2
+      };
+    };
+
+    CeramicCapacitor.prototype.pin_positions = function() {
+      var pp;
+      pp = {};
+      pp['1'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y
+      };
+      pp['2'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y + this.values.height
+      };
+      return pp;
+    };
+
+    CeramicCapacitor.prototype.draw = function(context) {
+      context.beginPath();
+      context.fillStyle = 'black';
+      context.fillText(this.values.label, this.values.x + this.values.width + 3, this.values.y + this.values.height / 2 - 7);
+      context.rect(this.values.x, this.values.y + this.values.connectorStandoff, this.values.width, this.values.lineWidth);
+      context.rect(this.values.x, this.values.y + this.values.height - this.values.connectorStandoff, this.values.width, this.values.lineWidth);
+      context.moveTo(this.values.x + +this.values.width / 2, this.values.y);
+      context.lineTo(this.values.x + +this.values.width / 2, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.x + +this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.x + +this.values.width / 2, this.values.y + this.values.height);
+      context.fill();
+      context.stroke();
+      context.closePath();
+    };
+
+    return CeramicCapacitor;
+
+  })(root.Component);
+
+  root.Led = (function(_super) {
+    __extends(Led, _super);
+
+    function Led() {
+      return Led.__super__.constructor.apply(this, arguments);
+    }
+
+    Led.prototype.component_defaults = function() {
+      return {
+        width: 20,
+        height: 30,
+        color: 'red'
+      };
+    };
+
+    Led.prototype.pin_positions = function() {
+      var pp;
+      pp = {};
+      pp['1'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y
+      };
+      pp['2'] = {
+        x: this.values.x + this.values.width / 2,
+        y: this.values.y + this.values.height
+      };
+      return pp;
+    };
+
+    Led.prototype.draw = function(context, in_on_state) {
+      var component_color;
+      component_color = in_on_state ? this.values.color : 'black';
+      context.beginPath();
+      context.strokeStyle = 'black';
+      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
+      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
+      context.stroke();
+      context.closePath();
+      context.beginPath();
+      context.strokeStyle = component_color;
+      context.fillStyle = component_color;
+      context.moveTo(this.values.x + this.values.width, this.values.y + this.values.connectorStandoff);
+      context.lineTo(this.values.x, this.values.y + this.values.connectorStandoff);
+      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.x + this.values.width, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.x - 14, this.values.y + 12);
+      context.lineTo(this.values.x - 20, this.values.y + 18);
+      context.moveTo(this.values.x - 13, this.values.y + 16);
+      context.lineTo(this.values.x - 19, this.values.y + 22);
+      context.rect(this.values.x, this.values.y + this.values.height - this.values.connectorStandoff + 1, this.values.width, 2);
+      context.fill();
+      context.stroke();
+      context.closePath();
+    };
+
+    return Led;
+
+  })(root.Component);
+
+  root.LM555 = (function(_super) {
+    __extends(LM555, _super);
+
+    function LM555() {
+      return LM555.__super__.constructor.apply(this, arguments);
+    }
+
+    LM555.prototype.component_defaults = function() {
+      return {
+        width: 100,
+        height: 120
+      };
+    };
+
+    LM555.prototype.pin_positions = function() {
+      var pp;
+      pp = {};
+      pp['8'] = {
+        x: this.values.x + 40,
+        y: this.values.y
+      };
+      pp['4'] = {
+        x: this.values.x + 60,
+        y: this.values.y
+      };
+      pp['7'] = {
+        x: this.values.x,
+        y: this.values.y + 30
+      };
+      pp['6'] = {
+        x: this.values.x,
+        y: this.values.y + 70
+      };
+      pp['2'] = {
+        x: this.values.x,
+        y: this.values.y + 90
+      };
+      pp['1'] = {
+        x: this.values.x + 40,
+        y: this.values.y + 120
+      };
+      pp['5'] = {
+        x: this.values.x + 60,
+        y: this.values.y + 120
+      };
+      pp['3'] = {
+        x: this.values.x + this.values.width,
+        y: this.values.y + 60
+      };
+      return pp;
+    };
+
+    LM555.prototype.draw = function(context) {
+      var connectorStandoff, x, y;
+      x = this.values.x;
+      y = this.values.y;
+      connectorStandoff = this.values.connectorStandoff;
+      context.strokeStyle = "black";
+      context.lineWidth = this.values.lineWidth;
+      context.beginPath();
+      context.fillStyle = 'white';
+      context.rect(x + connectorStandoff, y + connectorStandoff, this.values.width - 2 * connectorStandoff, this.values.height - 2 * connectorStandoff);
+      context.fill();
+      context.stroke();
+      context.closePath();
+      context.beginPath();
+      context.fillStyle = 'black';
+      context.moveTo(x + 40, y);
+      context.lineTo(x + 40, y + connectorStandoff);
+      context.fillText("8", x + 36, y + 15);
+      context.moveTo(x + 60, y);
+      context.lineTo(x + 60, y + connectorStandoff);
+      context.fillText("4", x + 56, y + 15);
+      context.moveTo(x, y + 30);
+      context.lineTo(x + connectorStandoff, y + 30);
+      context.fillText("7", x + 13, y + 24);
+      context.moveTo(x, y + 70);
+      context.lineTo(x + connectorStandoff, y + 70);
+      context.fillText("6", x + 13, y + 64);
+      context.moveTo(x, y + 90);
+      context.lineTo(x + connectorStandoff, y + 90);
+      context.fillText("2", x + 13, y + 84);
+      context.moveTo(x + 40, y + 110);
+      context.lineTo(x + 40, y + 120);
+      context.fillText("1", x + 36, y + 95);
+      context.moveTo(x + 60, y + 110);
+      context.lineTo(x + 60, y + 120);
+      context.fillText("5", x + 56, y + 95);
+      context.moveTo(x + 90, y + 60);
+      context.lineTo(x + 100, y + 60);
+      context.fillText("3", x + 78, y + 54);
+      context.fill();
+      context.stroke();
+      return context.closePath();
+    };
+
+    return LM555;
+
+  })(root.Component);
+
+  root.CommonRail = (function(_super) {
+    __extends(CommonRail, _super);
+
+    function CommonRail() {
+      return CommonRail.__super__.constructor.apply(this, arguments);
+    }
+
+    CommonRail.prototype.pin_position = function(pin) {
+      return {
+        x: pin,
+        y: this.values.y
+      };
+    };
+
+    CommonRail.prototype.draw = function(context) {
+      context.beginPath();
+      context.strokeStyle = "black";
+      context.lineWidth = this.values.lineWidth;
+      context.moveTo(this.values.x, this.values.y);
+      context.lineTo(this.values.x + this.values.width, this.values.y + this.values.height);
+      context.stroke();
+      this.draw_label(context);
+      return context.closePath();
+    };
+
+    return CommonRail;
+
+  })(root.Component);
+
+  root.PowerRail = (function(_super) {
+    __extends(PowerRail, _super);
+
+    function PowerRail() {
+      return PowerRail.__super__.constructor.apply(this, arguments);
+    }
+
+    PowerRail.prototype.component_defaults = function() {
+      return {
+        x: 0,
+        y: 30,
+        width: 400,
+        height: 0,
+        lineWidth: 2,
+        label: 'Vcc'
+      };
+    };
+
+    PowerRail.prototype.draw_label = function(context) {
+      context.fillText(this.values.label, this.values.x + 20, this.values.y - 15);
+      return context.stroke();
+    };
+
+    return PowerRail;
+
+  })(root.CommonRail);
+
+  root.GroundRail = (function(_super) {
+    __extends(GroundRail, _super);
+
+    function GroundRail() {
+      return GroundRail.__super__.constructor.apply(this, arguments);
+    }
+
+    GroundRail.prototype.component_defaults = function() {
+      return {
+        x: 0,
+        y: 340,
+        width: 400,
+        height: 0,
+        lineWidth: 2,
+        label: 'Gnd'
+      };
+    };
+
+    GroundRail.prototype.draw_label = function(context) {
+      var gnd_mid, gnd_offset;
+      context.fillText(this.values.label, this.values.x + 20, this.values.y + 3);
+      gnd_mid = this.values.x + this.values.width - 50;
+      gnd_offset = this.values.y + this.values.height;
+      context.lineWidth = 1;
+      context.moveTo(gnd_mid, gnd_offset);
+      context.lineTo(gnd_mid, gnd_offset + 8);
+      context.moveTo(gnd_mid - 10, gnd_offset + 8);
+      context.lineTo(gnd_mid + 10, gnd_offset + 8);
+      context.moveTo(gnd_mid - 6, gnd_offset + 11);
+      context.lineTo(gnd_mid + 6, gnd_offset + 11);
+      context.moveTo(gnd_mid - 3, gnd_offset + 14);
+      context.lineTo(gnd_mid + 3, gnd_offset + 14);
+      return context.stroke();
+    };
+
+    return GroundRail;
+
+  })(root.CommonRail);
+
+  root.ConnectingWire = (function(_super) {
+    __extends(ConnectingWire, _super);
+
+    function ConnectingWire(part1, part1_pin, part2, part2_pin) {
+      this.part1 = part1;
+      this.part1_pin = part1_pin;
+      this.part2 = part2;
+      this.part2_pin = part2_pin;
+      ConnectingWire.__super__.constructor.call(this);
+    }
+
+    ConnectingWire.prototype.draw = function(context) {
+      var part1_position, part2_position;
+      part1_position = this.part1.pin_position(this.part1_pin);
+      part2_position = this.part2.pin_position(this.part2_pin);
+      if (!(part1_position && part2_position)) {
+        return;
+      }
+      context.beginPath();
+      context.strokeStyle = "black";
+      context.lineWidth = this.values.lineWidth;
+      context.moveTo(part1_position.x, part1_position.y);
+      context.lineTo(part2_position.x, part2_position.y);
+      context.stroke();
+      return context.closePath();
+    };
+
+    return ConnectingWire;
+
+  })(root.Component);
+
+}).call(this);
+
+(function() {
   var root;
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
@@ -86,6 +525,7 @@
 
     function Visual555(container) {
       this.container = container;
+      this.components = [];
       this.calculator = new root.Calculator555();
       this.context = this.container.get(0).getContext("2d");
       this.apply_defaults();
@@ -122,152 +562,97 @@
       return this.calculator.recalc(values);
     };
 
+    Visual555.prototype.add_component = function(component) {
+      this.components.push(component);
+      return component;
+    };
+
     Visual555.prototype.draw_circuit = function() {
-      var y_gnd, y_vcc;
+      var c1, c2, gnd, r1, r2, r3, timer, vcc, width, y_gnd, y_vcc;
       y_vcc = 30;
       y_gnd = 340;
-      this.draw_wire(10, y_vcc, 400, y_vcc);
-      this.draw_wire(10, y_gnd, 400, y_gnd);
-      this.draw_resistor(100, y_vcc + 20, 'R1');
-      this.draw_resistor(100, y_vcc + 100, 'R2');
-      this.draw_capacitor(100, y_vcc + 170, 'C1');
-      this.draw_wire(105, y_vcc, 105, y_vcc + 20);
-      this.draw_wire(105, y_vcc + 80, 105, y_vcc + 100);
-      this.draw_wire(105, y_vcc + 160, 105, y_vcc + 170);
-      this.draw_wire(105, y_vcc + 200, 105, y_gnd);
-      this.draw_wire(105, y_vcc + 100, 160, y_vcc + 100);
-      this.draw_wire(105, y_vcc + 160, 160, y_vcc + 160);
-      this.draw_wire(160, y_vcc + 140, 160, y_vcc + 160);
-      this.draw_wire(200, y_vcc, 200, y_vcc + 70);
-      this.draw_wire(220, y_vcc, 220, y_vcc + 70);
-      this.draw_timer(160, y_vcc + 70);
-      this.draw_wire(200, 220, 200, y_gnd);
-      this.draw_capacitor(215, 220, 'C2');
-      this.draw_wire(220, 220 + 30, 220, y_gnd);
-      this.draw_wire(260, y_vcc + 130, 305, y_vcc + 130);
-      this.draw_resistor(300, y_vcc + 130, 'R3');
-      this.draw_wire(305, y_vcc + 190, 305, y_vcc + 200);
-      this.draw_wire(305, y_vcc + 230, 305, y_gnd);
-      return this.led_off();
+      width = 400;
+      vcc = this.add_component(new root.PowerRail({
+        y: y_vcc,
+        width: width
+      }));
+      gnd = this.add_component(new root.GroundRail({
+        y: y_gnd,
+        width: width
+      }));
+      r1 = this.add_component(new root.Resistor({
+        x: 100,
+        y: y_vcc + 20,
+        label: 'R1'
+      }));
+      r2 = this.add_component(new root.Resistor({
+        x: 100,
+        y: y_vcc + 100,
+        label: 'R2'
+      }));
+      c1 = this.add_component(new root.CeramicCapacitor({
+        x: 100,
+        y: y_vcc + 170,
+        label: 'C1'
+      }));
+      timer = this.add_component(new root.LM555({
+        x: 160,
+        y: y_vcc + 70
+      }));
+      c2 = this.add_component(new root.CeramicCapacitor({
+        x: 215,
+        y: 220,
+        label: 'C2'
+      }));
+      r3 = this.add_component(new root.Resistor({
+        x: 300,
+        y: y_vcc + 130,
+        label: 'R3'
+      }));
+      this.output_led = this.add_component(new root.Led({
+        x: 295,
+        y: 230,
+        color: 'red'
+      }));
+      this.add_component(new root.ConnectingWire(vcc, 105, r1, '1'));
+      this.add_component(new root.ConnectingWire(r1, '2', r2, '1'));
+      this.add_component(new root.ConnectingWire(r2, '2', c1, '1'));
+      this.add_component(new root.ConnectingWire(c1, '2', gnd, 105));
+      this.add_component(new root.ConnectingWire(vcc, 200, timer, '8'));
+      this.add_component(new root.ConnectingWire(vcc, 220, timer, '4'));
+      this.add_component(new root.ConnectingWire(r2, '1', timer, '7'));
+      this.add_component(new root.ConnectingWire(r2, '2', timer, '2'));
+      this.add_component(new root.ConnectingWire(timer, '6', timer, '2'));
+      this.add_component(new root.ConnectingWire(timer, '1', gnd, 200));
+      this.add_component(new root.ConnectingWire(timer, '3', r3, '1'));
+      this.add_component(new root.ConnectingWire(r3, '2', this.output_led, '1'));
+      this.add_component(new root.ConnectingWire(this.output_led, '2', gnd, 305));
+      this.add_component(new root.ConnectingWire(timer, '5', c2, '1'));
+      this.add_component(new root.ConnectingWire(c2, '2', gnd, 220));
+      return this.redraw();
+    };
+
+    Visual555.prototype.redraw = function() {
+      var component, _i, _len, _ref, _results;
+      _ref = this.components;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        component = _ref[_i];
+        _results.push(component.draw(this.context));
+      }
+      return _results;
     };
 
     Visual555.prototype.led_off = function() {
-      return this.draw_led(305, 230, 'black');
+      if (this.output_led) {
+        return this.output_led.draw(this.context, false);
+      }
     };
 
     Visual555.prototype.led_on = function() {
-      return this.draw_led(305, 230, 'red');
-    };
-
-    Visual555.prototype.draw_wire = function(x1, y1, x2, y2) {
-      this.context.strokeStyle = "black";
-      this.context.lineWidth = 1;
-      this.context.beginPath();
-      this.context.moveTo(x1, y1);
-      this.context.lineTo(x2, y2);
-      this.context.stroke();
-      return this.context.closePath();
-    };
-
-    Visual555.prototype.draw_resistor = function(x, y, label) {
-      this.context.strokeStyle = "black";
-      this.context.beginPath();
-      this.context.fillStyle = 'white';
-      this.context.rect(x, y + 10, 10, 40);
-      this.context.fill();
-      this.context.stroke();
-      this.context.closePath();
-      this.context.beginPath();
-      this.context.fillStyle = 'black';
-      this.context.fillText(label, x + 13, y + 23);
-      this.context.moveTo(x + 5, y);
-      this.context.lineTo(x + 5, y + 10);
-      this.context.moveTo(x + 5, y + 50);
-      this.context.lineTo(x + 5, y + 60);
-      this.context.stroke();
-      return this.context.closePath();
-    };
-
-    Visual555.prototype.draw_capacitor = function(x, y, label) {
-      this.context.beginPath();
-      this.context.fillStyle = 'black';
-      this.context.fillText(label, x + 13, y + 13);
-      this.context.rect(x, y + 10, 10, 2);
-      this.context.rect(x, y + 15, 10, 2);
-      this.context.moveTo(x + 5, y);
-      this.context.lineTo(x + 5, y + 10);
-      this.context.moveTo(x + 5, y + 17);
-      this.context.lineTo(x + 5, y + 30);
-      this.context.fill();
-      this.context.stroke();
-      return this.context.closePath();
-    };
-
-    Visual555.prototype.draw_led = function(x, y, color) {
-      this.context.beginPath();
-      this.context.strokeStyle = 'black';
-      this.context.moveTo(x, y);
-      this.context.lineTo(x, y + 10);
-      this.context.moveTo(x, y + 24);
-      this.context.lineTo(x, y + 40);
-      this.context.stroke();
-      this.context.closePath();
-      this.context.beginPath();
-      this.context.strokeStyle = color;
-      this.context.fillStyle = color;
-      this.context.moveTo(x, y + 10);
-      this.context.lineTo(x - 10, y + 10);
-      this.context.lineTo(x, y + 20);
-      this.context.lineTo(x + 10, y + 10);
-      this.context.lineTo(x, y + 10);
-      this.context.moveTo(x - 14, y + 12);
-      this.context.lineTo(x - 20, y + 18);
-      this.context.moveTo(x - 13, y + 16);
-      this.context.lineTo(x - 19, y + 22);
-      this.context.rect(x - 10, y + 21, 20, 2);
-      this.context.fill();
-      this.context.stroke();
-      return this.context.closePath();
-    };
-
-    Visual555.prototype.draw_timer = function(x, y) {
-      this.context.strokeStyle = "black";
-      this.context.lineWidth = 1;
-      this.context.beginPath();
-      this.context.fillStyle = 'white';
-      this.context.rect(x + 10, y + 10, 80, 100);
-      this.context.fill();
-      this.context.stroke();
-      this.context.closePath();
-      this.context.beginPath();
-      this.context.fillStyle = 'black';
-      this.context.moveTo(x + 40, y);
-      this.context.lineTo(x + 40, y + 10);
-      this.context.fillText("8", x + 36, y + 15);
-      this.context.moveTo(x + 60, y);
-      this.context.lineTo(x + 60, y + 10);
-      this.context.fillText("4", x + 56, y + 15);
-      this.context.moveTo(x, y + 30);
-      this.context.lineTo(x + 10, y + 30);
-      this.context.fillText("7", x + 13, y + 24);
-      this.context.moveTo(x, y + 70);
-      this.context.lineTo(x + 10, y + 70);
-      this.context.fillText("6", x + 13, y + 64);
-      this.context.moveTo(x, y + 90);
-      this.context.lineTo(x + 10, y + 90);
-      this.context.fillText("2", x + 13, y + 84);
-      this.context.moveTo(x + 40, y + 110);
-      this.context.lineTo(x + 40, y + 120);
-      this.context.fillText("1", x + 36, y + 95);
-      this.context.moveTo(x + 60, y + 110);
-      this.context.lineTo(x + 60, y + 120);
-      this.context.fillText("5", x + 56, y + 95);
-      this.context.moveTo(x + 90, y + 60);
-      this.context.lineTo(x + 100, y + 60);
-      this.context.fillText("3", x + 78, y + 54);
-      this.context.fill();
-      this.context.stroke();
-      return this.context.closePath();
+      if (this.output_led) {
+        return this.output_led.draw(this.context, true);
+      }
     };
 
     return Visual555;
