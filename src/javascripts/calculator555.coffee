@@ -16,8 +16,12 @@ class root.Calculator555
       cycleTime: 0,
       timeHigh: 0,
       timeLow: 0,
-      dutyCycle: 0
+      dutyCycle: 0,
+      mode: 'astable'
     }
+
+  mode: ->
+    @values.mode
 
   timeHigh: ->
     @values.timeHigh
@@ -27,9 +31,16 @@ class root.Calculator555
 
   recalc: (settings)->
     $.extend(@values, settings) if settings
-    @values.frequency = 1.44 * 1000 / ( @values.r1 + 2 * @values.r2 ) / @values.c
-    @values.timeHigh = 0.693 * ( @values.r1 + @values.r2 ) * @values.c
-    @values.timeLow  = 0.693 * @values.r2 * @values.c
-    @values.cycleTime = @values.timeHigh + @values.timeLow
-    @values.dutyCycle = @values.timeHigh / @values.cycleTime * 100.0
+    if @values.mode == 'monostable'
+      @values.frequency = NaN
+      @values.timeHigh = 1.1 * @values.r1 * @values.c
+      @values.timeLow = NaN
+      @values.cycleTime = NaN
+      @values.dutyCycle = NaN
+    else
+      @values.frequency = 1.44 * 1000 / ( @values.r1 + 2 * @values.r2 ) / @values.c
+      @values.timeHigh = 0.693 * ( @values.r1 + @values.r2 ) * @values.c
+      @values.timeLow  = 0.693 * @values.r2 * @values.c
+      @values.cycleTime = @values.timeHigh + @values.timeLow
+      @values.dutyCycle = @values.timeHigh / @values.cycleTime * 100.0
     @values

@@ -1,9 +1,10 @@
 describe("Calculator555()", function() {
   var subject = new Calculator555();
 
-  it("should construct object with values reset", function() {
+  it("should construct object with values reset and default astable mode", function() {
     expect(subject.timeHigh()).toEqual(0);
     expect(subject.timeLow()).toEqual(0);
+    expect(subject.mode()).toEqual('astable');
   });
 
 });
@@ -13,6 +14,7 @@ describe("Calculator555({..})", function() {
 
   it("should construct object with values calculated given options", function() {
     expect(subject.values.frequency).toEqual(0.976933514246947);
+    expect(subject.values.mode).toEqual('astable');
   });
 
   describe(".values", function() {
@@ -37,35 +39,103 @@ describe("Calculator555({..})", function() {
     });
   });
 
-});
+  describe(".recalc()", function() {
 
-describe("Calculator555.recalc()", function() {
-
-  it("calculates astable correctly given r1,r2,c", function() {
-    var subject = new Calculator555();
-    var result = subject.recalc({
-      r1: 10,
-      r2: 330,
-      c: 2.2
+    it("calculates with new values", function() {
+      var result = subject.recalc({
+        r1: 10,
+        r2: 4.7,
+        c: 0.01
+      });
+      expect(result.frequency).toEqual(7422.6804123711345);
+      expect(result.cycleTime).toEqual(0.134442);
+      expect(result.timeHigh).toEqual(0.10187099999999999);
+      expect(result.timeLow).toEqual(0.032571);
+      expect(result.dutyCycle).toEqual(75.77319587628864);
     });
-    expect(result.frequency).toEqual(0.976933514246947);
-    expect(result.cycleTime).toEqual(1021.482);
-    expect(result.timeHigh).toEqual(518.364);
-    expect(result.timeLow).toEqual(503.118);
-    expect(result.dutyCycle).toEqual(50.74626865671642);
+
+
+    it("with mode change calculates with new values", function() {
+      var result = subject.recalc({
+        r1: 33,
+        c: 47,
+        mode: 'monostable'
+      });
+      expect(result.mode).toEqual('monostable');
+      expect(result.frequency).toEqual(NaN);
+      expect(result.cycleTime).toEqual(NaN);
+      expect(result.timeHigh).toEqual(1.1 * 33 * 47);
+      expect(result.timeLow).toEqual(NaN);
+      expect(result.dutyCycle).toEqual(NaN);
+    });
+
+  });
+
+  describe(".reset()", function() {
+
+    it("should reset all values to 0", function() {
+      subject.reset();
+      expect(subject.mode()).toEqual('astable');
+      expect(subject.timeHigh()).toEqual(0);
+      expect(subject.timeLow()).toEqual(0);
+    });
+
   });
 
 });
 
-describe("Calculator555.reset()", function() {
-  var subject = new Calculator555({r1: 10, r2: 330, c: 2.2});
+describe("Calculator555({.., mode: 'monostable'})", function() {
+  var subject = new Calculator555({r1: 10, c: 47, mode: 'monostable'});
 
-  it("should reset all values to 0", function() {
-    expect(subject.timeHigh()).toEqual(518.364);
-    subject.reset();
-    expect(subject.timeHigh()).toEqual(0);
-    expect(subject.timeLow()).toEqual(0);
+  it("should construct object with values calculated given options", function() {
+    expect(subject.values.timeHigh).toEqual(1.1 * 10 * 47);
+    expect(subject.values.mode).toEqual('monostable');
+  });
+
+  describe(".recalc()", function() {
+
+    it("calculates with new values", function() {
+      var result = subject.recalc({
+        r1: 33,
+        c: 47
+      });
+      expect(result.mode).toEqual('monostable');
+      expect(result.frequency).toEqual(NaN);
+      expect(result.cycleTime).toEqual(NaN);
+      expect(result.timeHigh).toEqual(1.1 * 33 * 47);
+      expect(result.timeLow).toEqual(NaN);
+      expect(result.dutyCycle).toEqual(NaN);
+    });
+
+    it("with mode change should calculates with new values", function() {
+      var result = subject.recalc({
+        r1: 10,
+        r2: 4.7,
+        c: 0.01,
+        mode: 'astable'
+      });
+      expect(result.mode).toEqual('astable');
+      expect(result.frequency).toEqual(7422.6804123711345);
+      expect(result.cycleTime).toEqual(0.134442);
+      expect(result.timeHigh).toEqual(0.10187099999999999);
+      expect(result.timeLow).toEqual(0.032571);
+      expect(result.dutyCycle).toEqual(75.77319587628864);
+    });
+
+  });
+
+  describe(".reset()", function() {
+
+    it("should reset all values to 0", function() {
+      subject.reset();
+      expect(subject.mode()).toEqual('astable');
+      expect(subject.timeHigh()).toEqual(0);
+      expect(subject.timeLow()).toEqual(0);
+    });
+
   });
 
 });
+
+
 

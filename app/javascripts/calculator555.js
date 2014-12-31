@@ -18,8 +18,13 @@
         cycleTime: 0,
         timeHigh: 0,
         timeLow: 0,
-        dutyCycle: 0
+        dutyCycle: 0,
+        mode: 'astable'
       };
+    };
+
+    Calculator555.prototype.mode = function() {
+      return this.values.mode;
     };
 
     Calculator555.prototype.timeHigh = function() {
@@ -34,11 +39,19 @@
       if (settings) {
         $.extend(this.values, settings);
       }
-      this.values.frequency = 1.44 * 1000 / (this.values.r1 + 2 * this.values.r2) / this.values.c;
-      this.values.timeHigh = 0.693 * (this.values.r1 + this.values.r2) * this.values.c;
-      this.values.timeLow = 0.693 * this.values.r2 * this.values.c;
-      this.values.cycleTime = this.values.timeHigh + this.values.timeLow;
-      this.values.dutyCycle = this.values.timeHigh / this.values.cycleTime * 100.0;
+      if (this.values.mode === 'monostable') {
+        this.values.frequency = NaN;
+        this.values.timeHigh = 1.1 * this.values.r1 * this.values.c;
+        this.values.timeLow = NaN;
+        this.values.cycleTime = NaN;
+        this.values.dutyCycle = NaN;
+      } else {
+        this.values.frequency = 1.44 * 1000 / (this.values.r1 + 2 * this.values.r2) / this.values.c;
+        this.values.timeHigh = 0.693 * (this.values.r1 + this.values.r2) * this.values.c;
+        this.values.timeLow = 0.693 * this.values.r2 * this.values.c;
+        this.values.cycleTime = this.values.timeHigh + this.values.timeLow;
+        this.values.dutyCycle = this.values.timeHigh / this.values.cycleTime * 100.0;
+      }
       return this.values;
     };
 
