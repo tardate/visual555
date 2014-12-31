@@ -34,6 +34,18 @@ describe("CeramicCapacitor()", function() {
 
 });
 
+describe("SpstSwitch()", function() {
+  var subject = new SpstSwitch();
+
+  it("should construct object with default values reset", function() {
+    expect(subject.values.x).toEqual(0);
+    expect(subject.values.y).toEqual(0);
+    expect(subject.values.width).toEqual(20);
+    expect(subject.values.height).toEqual(40);
+  });
+
+});
+
 describe("Led()", function() {
   var subject = new Led();
 

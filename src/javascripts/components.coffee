@@ -59,19 +59,24 @@ class root.Resistor  extends root.Component
   draw: (context)->
     context.beginPath()
     context.strokeStyle  = 'black'
-    context.fillStyle = 'white'
-    context.rect(@values.x, @values.y + @values.connectorStandoff, @values.width, @values.height - 2 * @values.connectorStandoff)
-    context.fill()
-    context.stroke()
-    context.closePath()
-
-    context.beginPath()
-    context.strokeStyle  = 'black'
     context.fillStyle = 'black'
     context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
     context.moveTo(@values.x + @values.width / 2, @values.y)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    y_step = (@values.height - 2 * @values.connectorStandoff) / 16
+    y = @values.y + @values.connectorStandoff
+    context.lineTo(@values.x + @values.width / 2, y)
+    y += y_step
+    context.lineTo(@values.x + @values.width, y)
+    for i in [0..2] by 1
+      y += y_step * 2
+      context.lineTo(@values.x, y)
+      y += y_step * 2
+      context.lineTo(@values.x + @values.width, y)
+    y += y_step * 2
+    context.lineTo(@values.x, y)
+    y += y_step
+    context.lineTo(@values.x + @values.width / 2, y)
+
     context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
     context.stroke()
     context.closePath()
@@ -97,14 +102,58 @@ class root.CeramicCapacitor extends root.Component
 
   draw: (context)->
     context.beginPath()
+    context.strokeStyle = 'black'
     context.fillStyle = 'black'
     context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
     context.rect(@values.x, @values.y + @values.connectorStandoff, @values.width, @values.lineWidth)
     context.rect(@values.x, @values.y + @values.height - @values.connectorStandoff, @values.width, @values.lineWidth)
-    context.moveTo(@values.x +  + @values.width / 2, @values.y)
-    context.lineTo(@values.x +  + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.moveTo(@values.x +  + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
-    context.lineTo(@values.x +  + @values.width / 2, @values.y + @values.height)
+    context.moveTo(@values.x + @values.width / 2, @values.y)
+    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
+    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
+    context.fill()
+    context.stroke()
+    context.closePath()
+    return
+
+
+# SPST NO switch component
+class root.SpstSwitch extends root.Component
+
+  componentDefaults: ->
+    {
+      width: 20,
+      height: 40,
+    }
+
+  pinPositions: ->
+    pp = {}
+    pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
+    pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
+    pp
+
+  draw: (context,with_switch_closed)->
+    context.beginPath()
+    context.strokeStyle = 'black'
+    context.fillStyle = 'black'
+
+    context.clearRect(@values.x - 1, @values.y + 1, @values.width + 20,@values.height - 2) # this is a hack to make redraw animation leave a clean canvas
+
+    context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
+    context.moveTo(@values.x + @values.width / 2, @values.y)
+    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
+    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
+    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    if with_switch_closed
+      context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
+    else
+      context.lineTo(@values.x , @values.y + @values.connectorStandoff)
+
+    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    context.arc(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff, 2, 0, 2 * Math.PI);
+    context.moveTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
+    context.arc(@values.x + @values.width / 2, @values.y + @values.connectorStandoff, 2, 0, 2 * Math.PI);
     context.fill()
     context.stroke()
     context.closePath()
@@ -127,8 +176,8 @@ class root.Led extends root.Component
     pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
     pp
 
-  draw: (context,in_on_state)->
-    component_color = if in_on_state
+  draw: (context,with_led_on)->
+    component_color = if with_led_on
       @values.color
     else
       'black'
@@ -151,11 +200,11 @@ class root.Led extends root.Component
     context.lineTo(@values.x + @values.width / 2,  @values.y + @values.height - @values.connectorStandoff)
     context.lineTo(@values.x + @values.width,      @values.y + @values.connectorStandoff)
 
-    context.moveTo(@values.x - 14, @values.y + 12)
-    context.lineTo(@values.x - 20, @values.y + 18)
-
-    context.moveTo(@values.x - 13, @values.y + 16)
-    context.lineTo(@values.x - 19, @values.y + 22)
+    ray_offset = @values.x - 2
+    context.moveTo(ray_offset - 1, @values.y + 13)
+    context.lineTo(ray_offset - 6, @values.y + 19)
+    context.moveTo(ray_offset,     @values.y + 17)
+    context.lineTo(ray_offset - 5, @values.y + 23)
 
     context.rect(@values.x, @values.y + @values.height - @values.connectorStandoff + 1, @values.width, 2)
     context.fill()
@@ -242,6 +291,7 @@ class root.LM555 extends root.Component
     context.fill()
     context.stroke()
     context.closePath()
+    return
 
 
 # base component for power/ground rails
@@ -253,13 +303,15 @@ class root.CommonRail extends root.Component
 
   draw: (context)->
     context.beginPath()
-    context.strokeStyle  = "black"
+    context.strokeStyle = 'black'
+    context.fillStyle = 'black'
     context.lineWidth = @values.lineWidth
     context.moveTo( @values.x, @values.y )
     context.lineTo( @values.x + @values.width, @values.y + @values.height)
     context.stroke()
     @draw_label(context)
     context.closePath()
+    return
 
 # positive power rail
 class root.PowerRail extends root.CommonRail
@@ -277,6 +329,7 @@ class root.PowerRail extends root.CommonRail
   draw_label: (context)->
     context.fillText(@values.label, @values.x + 20, @values.y - 15)
     context.stroke()
+    return
 
 # ground rail
 class root.GroundRail extends root.CommonRail
@@ -306,6 +359,7 @@ class root.GroundRail extends root.CommonRail
     context.moveTo( gnd_mid - 3, gnd_offset + 14)
     context.lineTo( gnd_mid + 3, gnd_offset + 14)
     context.stroke()
+    return
 
 
 
@@ -321,18 +375,15 @@ class root.ConnectingWire extends root.Component
     return unless part1_position && part2_position
 
     context.beginPath()
-    context.strokeStyle  = "black"
+    context.strokeStyle = 'black'
     context.lineWidth = @values.lineWidth
     context.moveTo(part1_position.x,part1_position.y)
     context.lineTo(part2_position.x,part2_position.y)
+    context.moveTo(part1_position.x,part1_position.y)
+    context.arc(part1_position.x,part1_position.y, 1, 0, 2 * Math.PI);
+    context.moveTo(part2_position.x,part2_position.y)
+    context.arc(part2_position.x,part2_position.y, 1, 0, 2 * Math.PI);
     context.stroke()
     context.closePath()
-
-
-
-
-
-
-
-
+    return
 
