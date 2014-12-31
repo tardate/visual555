@@ -15,34 +15,45 @@
       instance = this;
       this.snaffleUrlParams();
       this.recalc();
-      return $('.form-control', this.container).on('change keyup', function() {
+      return $('.recalc_trigger', this.container).on('change keyup', function() {
         instance.recalc();
         return true;
       });
     };
 
     AppController.prototype.recalc = function() {
-      var values;
+      var mode, values;
       if (!this.visualizer) {
         return;
       }
+      mode = $("input:radio[name='Mode']:checked", this.container).val();
       values = this.visualizer.recalc({
         r1: parseFloat($('#R1', this.container).val()),
         r2: parseFloat($('#R2', this.container).val()),
-        c: parseFloat($('#C', this.container).val())
+        c: parseFloat($('#C', this.container).val()),
+        mode: mode
       });
       $('#frequency', this.container).html(values.frequency.toFixed(3) + ' Hz');
       $('#timeHigh', this.container).html(values.timeHigh.toFixed(3) + ' ms');
       $('#timeLow', this.container).html(values.timeLow.toFixed(3) + ' ms');
       $('#cycleTime', this.container).html(values.cycleTime.toFixed(3) + ' ms');
       $('#dutyCycle', this.container).html(values.dutyCycle.toFixed(3) + ' %');
-      return $('#permalink', this.container).attr('href', '?r1=' + values.r1 + '&r2=' + values.r2 + '&c=' + values.c);
+      if (mode === 'monostable') {
+        $('.astable-only', this.container).hide();
+        return $('#visual555_permalink').attr('href', '?mode=monostable&r1=' + values.r1 + '&c=' + values.c);
+      } else {
+        $('.astable-only', this.container).show();
+        return $('#visual555_permalink').attr('href', '?mode=astable&r1=' + values.r1 + '&r2=' + values.r2 + '&c=' + values.c);
+      }
     };
 
     AppController.prototype.snaffleUrlParams = function() {
+      var mode;
       $('#R1', this.container).val(this.param('r1') || 1);
       $('#R2', this.container).val(this.param('r2') || 330);
-      return $('#C', this.container).val(this.param('c') || 2.2);
+      $('#C', this.container).val(this.param('c') || 2.2);
+      mode = this.param('mode') || 'astable';
+      return $("input[name='Mode'][value='" + mode + "']", this.container).prop("checked", true);
     };
 
     AppController.prototype.param = function(name) {

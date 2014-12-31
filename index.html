@@ -32,7 +32,14 @@
 
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title">555 Timer A-stable Oscillator</h3>
+
+            <h3 class="panel-title">
+              555 Timer A-stable Oscillator
+              <a id="visual555_permalink" href="" class="pull-right">
+                <i class="fa fa-link"></i>
+                permalink to this solution
+              </a>
+            </h3>
           </div>
           <div class="panel-body">
             <div class="container">
@@ -42,31 +49,44 @@
                   <form role="form" id="visual555" class="form-horizontal">
 
                     <div class="form-group">
-                      <label for="R1" class="col-sm-6 control-label">R1 (k&Omega;)</label>
-                      <div class="col-sm-6">
-                        <input type="input" class="form-control" id="R1" placeholder="Enter R1">
+                      <label for="Mode" class="col-sm-6 control-label">Mode</label>
+                      <div class="radio col-sm-4">
+                        <label>
+                          <input type="radio" class="recalc_trigger" name="Mode" id="Mode-astable" value="astable">
+                          astable
+                        </label>
+                        <label>
+                          <input type="radio" class="recalc_trigger" name="Mode" id="Mode-monostable" value="monostable">
+                          monostable
+                        </label>
                       </div>
                     </div>
                     <div class="form-group">
+                      <label for="R1" class="col-sm-6 control-label">R1 (k&Omega;)</label>
+                      <div class="col-sm-4">
+                        <input type="input" class="recalc_trigger form-control" id="R1" placeholder="Enter R1">
+                      </div>
+                    </div>
+                    <div class="form-group astable-only">
                       <label for="R2" class="col-sm-6 control-label">R2 (k&Omega;)</label>
-                      <div class="col-sm-6">
-                        <input type="input" class="form-control" id="R2" placeholder="Enter R2">
+                      <div class="col-sm-4">
+                        <input type="input" class="recalc_trigger form-control" id="R2" placeholder="Enter R2">
                       </div>
                     </div>
                     <div class="form-group">
                       <label for="C" class="col-sm-6 control-label">C1 (&mu;F)</label>
-                      <div class="col-sm-6">
-                        <input type="input" class="form-control" id="C" placeholder="Enter C">
+                      <div class="col-sm-4">
+                        <input type="input" class="recalc_trigger form-control" id="C" placeholder="Enter C">
                       </div>
                     </div>
                     <table class="table">
                       <caption></caption>
                       <tbody>
-                        <tr>
+                        <tr class="astable-only">
                           <td>Frequency</td>
                           <td id="frequency"></td>
                         </tr>
-                        <tr>
+                        <tr class="astable-only">
                           <td>Cycle Time</td>
                           <td id="cycleTime"></td>
                         </tr>
@@ -74,20 +94,17 @@
                           <td>Time High</td>
                           <td id="timeHigh"></td>
                         </tr>
-                        <tr>
+                        <tr class="astable-only">
                           <td>Time Low</td>
                           <td id="timeLow"></td>
                         </tr>
-                        <tr>
+                        <tr class="astable-only">
                           <td>Duty Cycle</td>
                           <td id="dutyCycle"></td>
                         </tr>
                       </tbody>
                     </table>
-                    <a id="permalink" href="">
-                      <i class="fa fa-link"></i>
-                      get the permalink to this solution
-                    </a>
+
                   </form>
                 </div>
                 <div class="col-md-8">

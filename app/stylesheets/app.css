@@ -5,3 +5,8 @@
   border: 0;
   z-index: 1000;
 }
+
+#visual555_permalink:hover {
+  color: #dff0d8;
+  text-decoration: none;
+}
