@@ -13,23 +13,23 @@ class root.Calculator555
       r2: 0,
       c: 0,
       frequency: 0,
-      cycle_time: 0,
-      time_high: 0,
-      time_low: 0,
-      duty_cycle: 0
+      cycleTime: 0,
+      timeHigh: 0,
+      timeLow: 0,
+      dutyCycle: 0
     }
 
-  time_high: ->
-    @values.time_high
+  timeHigh: ->
+    @values.timeHigh
 
-  time_low: ->
-    @values.time_low
+  timeLow: ->
+    @values.timeLow
 
   recalc: (settings)->
     $.extend(@values, settings) if settings
     @values.frequency = 1.44 * 1000 / ( @values.r1 + 2 * @values.r2 ) / @values.c
-    @values.time_high = 0.693 * ( @values.r1 + @values.r2 ) * @values.c
-    @values.time_low  = 0.693 * @values.r2 * @values.c
-    @values.cycle_time = @values.time_high + @values.time_low
-    @values.duty_cycle = @values.time_high / @values.cycle_time * 100.0
+    @values.timeHigh = 0.693 * ( @values.r1 + @values.r2 ) * @values.c
+    @values.timeLow  = 0.693 * @values.r2 * @values.c
+    @values.cycleTime = @values.timeHigh + @values.timeLow
+    @values.dutyCycle = @values.timeHigh / @values.cycleTime * 100.0
     @values

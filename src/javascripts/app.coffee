@@ -25,10 +25,10 @@ class root.AppController
     })
 
     $('#frequency',@container).html( values.frequency.toFixed(3) + ' Hz' )
-    $('#time_high',@container).html( values.time_high.toFixed(3) + ' ms' )
-    $('#time_low',@container).html( values.time_low.toFixed(3) + ' ms' )
-    $('#cycle_time',@container).html( values.cycle_time.toFixed(3) + ' ms' )
-    $('#duty_cycle',@container).html( values.duty_cycle.toFixed(3) + ' %' )
+    $('#timeHigh',@container).html( values.timeHigh.toFixed(3) + ' ms' )
+    $('#timeLow',@container).html( values.timeLow.toFixed(3) + ' ms' )
+    $('#cycleTime',@container).html( values.cycleTime.toFixed(3) + ' ms' )
+    $('#dutyCycle',@container).html( values.dutyCycle.toFixed(3) + ' %' )
     $('#permalink',@container).attr('href', '?r1=' + values.r1 + '&r2=' + values.r2 + '&c=' +values.c )
 
   snaffleUrlParams: ->

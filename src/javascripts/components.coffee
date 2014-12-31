@@ -4,13 +4,13 @@ root = exports ? this
 class root.Component
 
   constructor: (settings) ->
-    @values = @base_defaults()
-    $.extend(@values, @component_defaults())
+    @values = @baseDefaults()
+    $.extend(@values, @componentDefaults())
     $.extend(@values, settings) if settings
-    @pins = @pin_positions()
+    @pins = @pinPositions()
 
   # Returns the base set of common defaults
-  base_defaults: ->
+  baseDefaults: ->
     {
       x: 0,           # top-left x
       y: 0,           # top-left y
@@ -25,7 +25,7 @@ class root.Component
     }
 
   # Returns component-specific defaults (override in specific components)
-  component_defaults: ->
+  componentDefaults: ->
     {}
 
   # Command: draw the component on the canvas 2D +context+
@@ -33,24 +33,24 @@ class root.Component
     return
 
   # Returns {x: ,y:} hash with the outlet position for +pin+
-  pin_position: (pin)->
+  pinPosition: (pin)->
     @pins[pin]
 
   # Calculates and returns the pin positions for the component (override in specific components)
-  pin_positions: ->
+  pinPositions: ->
     {}
 
 
 # Resistor component
 class root.Resistor  extends root.Component
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       width: 10,
       height: 60,
     }
 
-  pin_positions: ->
+  pinPositions: ->
     pp = {}
     pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
     pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
@@ -82,14 +82,14 @@ class root.Resistor  extends root.Component
 # Ceramic Capacitor component
 class root.CeramicCapacitor extends root.Component
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       width: 10,
       height: 25,
       lineWidth: 2,
     }
 
-  pin_positions: ->
+  pinPositions: ->
     pp = {}
     pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
     pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
@@ -114,14 +114,14 @@ class root.CeramicCapacitor extends root.Component
 # LED component
 class root.Led extends root.Component
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       width: 20,
       height: 30,
       color: 'red',
     }
 
-  pin_positions: ->
+  pinPositions: ->
     pp = {}
     pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
     pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
@@ -168,13 +168,13 @@ class root.Led extends root.Component
 # LM 555 timer component
 class root.LM555 extends root.Component
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       width: 100,
       height: 120,
     }
 
-  pin_positions: ->
+  pinPositions: ->
     pp = {}
     pp['8'] = { x: @values.x + 40, y: @values.y }
     pp['4'] = { x: @values.x + 60, y: @values.y }
@@ -248,7 +248,7 @@ class root.LM555 extends root.Component
 class root.CommonRail extends root.Component
 
   # Returns {x: ,y:} hash with the outlet position for +pin+ where pin can be expressed as x position
-  pin_position: (pin)->
+  pinPosition: (pin)->
     { x: pin,y: @values.y }
 
   draw: (context)->
@@ -264,7 +264,7 @@ class root.CommonRail extends root.Component
 # positive power rail
 class root.PowerRail extends root.CommonRail
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       x: 0,
       y: 30,
@@ -281,7 +281,7 @@ class root.PowerRail extends root.CommonRail
 # ground rail
 class root.GroundRail extends root.CommonRail
 
-  component_defaults: ->
+  componentDefaults: ->
     {
       x: 0,
       y: 340,
@@ -316,8 +316,8 @@ class root.ConnectingWire extends root.Component
     super()
 
   draw: (context)->
-    part1_position = @part1.pin_position(@part1_pin)
-    part2_position = @part2.pin_position(@part2_pin)
+    part1_position = @part1.pinPosition(@part1_pin)
+    part2_position = @part2.pinPosition(@part2_pin)
     return unless part1_position && part2_position
 
     context.beginPath()

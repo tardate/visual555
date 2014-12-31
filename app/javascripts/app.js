@@ -32,10 +32,10 @@
         c: parseFloat($('#C', this.container).val())
       });
       $('#frequency', this.container).html(values.frequency.toFixed(3) + ' Hz');
-      $('#time_high', this.container).html(values.time_high.toFixed(3) + ' ms');
-      $('#time_low', this.container).html(values.time_low.toFixed(3) + ' ms');
-      $('#cycle_time', this.container).html(values.cycle_time.toFixed(3) + ' ms');
-      $('#duty_cycle', this.container).html(values.duty_cycle.toFixed(3) + ' %');
+      $('#timeHigh', this.container).html(values.timeHigh.toFixed(3) + ' ms');
+      $('#timeLow', this.container).html(values.timeLow.toFixed(3) + ' ms');
+      $('#cycleTime', this.container).html(values.cycleTime.toFixed(3) + ' ms');
+      $('#dutyCycle', this.container).html(values.dutyCycle.toFixed(3) + ' %');
       return $('#permalink', this.container).attr('href', '?r1=' + values.r1 + '&r2=' + values.r2 + '&c=' + values.c);
     };
 
@@ -71,15 +71,15 @@
 
   root.Component = (function() {
     function Component(settings) {
-      this.values = this.base_defaults();
-      $.extend(this.values, this.component_defaults());
+      this.values = this.baseDefaults();
+      $.extend(this.values, this.componentDefaults());
       if (settings) {
         $.extend(this.values, settings);
       }
-      this.pins = this.pin_positions();
+      this.pins = this.pinPositions();
     }
 
-    Component.prototype.base_defaults = function() {
+    Component.prototype.baseDefaults = function() {
       return {
         x: 0,
         y: 0,
@@ -94,17 +94,17 @@
       };
     };
 
-    Component.prototype.component_defaults = function() {
+    Component.prototype.componentDefaults = function() {
       return {};
     };
 
     Component.prototype.draw = function(context) {};
 
-    Component.prototype.pin_position = function(pin) {
+    Component.prototype.pinPosition = function(pin) {
       return this.pins[pin];
     };
 
-    Component.prototype.pin_positions = function() {
+    Component.prototype.pinPositions = function() {
       return {};
     };
 
@@ -119,14 +119,14 @@
       return Resistor.__super__.constructor.apply(this, arguments);
     }
 
-    Resistor.prototype.component_defaults = function() {
+    Resistor.prototype.componentDefaults = function() {
       return {
         width: 10,
         height: 60
       };
     };
 
-    Resistor.prototype.pin_positions = function() {
+    Resistor.prototype.pinPositions = function() {
       var pp;
       pp = {};
       pp['1'] = {
@@ -171,7 +171,7 @@
       return CeramicCapacitor.__super__.constructor.apply(this, arguments);
     }
 
-    CeramicCapacitor.prototype.component_defaults = function() {
+    CeramicCapacitor.prototype.componentDefaults = function() {
       return {
         width: 10,
         height: 25,
@@ -179,7 +179,7 @@
       };
     };
 
-    CeramicCapacitor.prototype.pin_positions = function() {
+    CeramicCapacitor.prototype.pinPositions = function() {
       var pp;
       pp = {};
       pp['1'] = {
@@ -219,7 +219,7 @@
       return Led.__super__.constructor.apply(this, arguments);
     }
 
-    Led.prototype.component_defaults = function() {
+    Led.prototype.componentDefaults = function() {
       return {
         width: 20,
         height: 30,
@@ -227,7 +227,7 @@
       };
     };
 
-    Led.prototype.pin_positions = function() {
+    Led.prototype.pinPositions = function() {
       var pp;
       pp = {};
       pp['1'] = {
@@ -280,14 +280,14 @@
       return LM555.__super__.constructor.apply(this, arguments);
     }
 
-    LM555.prototype.component_defaults = function() {
+    LM555.prototype.componentDefaults = function() {
       return {
         width: 100,
         height: 120
       };
     };
 
-    LM555.prototype.pin_positions = function() {
+    LM555.prototype.pinPositions = function() {
       var pp;
       pp = {};
       pp['8'] = {
@@ -380,7 +380,7 @@
       return CommonRail.__super__.constructor.apply(this, arguments);
     }
 
-    CommonRail.prototype.pin_position = function(pin) {
+    CommonRail.prototype.pinPosition = function(pin) {
       return {
         x: pin,
         y: this.values.y
@@ -409,7 +409,7 @@
       return PowerRail.__super__.constructor.apply(this, arguments);
     }
 
-    PowerRail.prototype.component_defaults = function() {
+    PowerRail.prototype.componentDefaults = function() {
       return {
         x: 0,
         y: 30,
@@ -436,7 +436,7 @@
       return GroundRail.__super__.constructor.apply(this, arguments);
     }
 
-    GroundRail.prototype.component_defaults = function() {
+    GroundRail.prototype.componentDefaults = function() {
       return {
         x: 0,
         y: 340,
@@ -481,8 +481,8 @@
 
     ConnectingWire.prototype.draw = function(context) {
       var part1_position, part2_position;
-      part1_position = this.part1.pin_position(this.part1_pin);
-      part2_position = this.part2.pin_position(this.part2_pin);
+      part1_position = this.part1.pinPosition(this.part1_pin);
+      part2_position = this.part2.pinPosition(this.part2_pin);
       if (!(part1_position && part2_position)) {
         return;
       }
@@ -528,26 +528,26 @@
       this.components = [];
       this.calculator = new root.Calculator555();
       this.context = this.container.get(0).getContext("2d");
-      this.apply_defaults();
-      this.draw_circuit();
-      this.init_animation_loop();
+      this.applyDefaults();
+      this.drawCircuit();
+      this.startAnimationLoop();
       true;
     }
 
-    Visual555.prototype.apply_defaults = function() {
+    Visual555.prototype.applyDefaults = function() {
       this.context.translate(0.5, 0.5);
       this.context.font = '14px monospace';
       return this.context.textBaseline = 'top';
     };
 
-    Visual555.prototype.init_animation_loop = function() {
+    Visual555.prototype.startAnimationLoop = function() {
       var f, instance, output_high;
       instance = this;
       output_high = true;
       f = function() {
         var t, th;
-        if ((th = instance.calculator.time_high()) > 0) {
-          t = output_high ? (instance.led_on(), th) : (instance.led_off(), instance.calculator.time_low());
+        if ((th = instance.calculator.timeHigh()) > 0) {
+          t = output_high ? (instance.ledOn(), th) : (instance.ledOff(), instance.calculator.timeLow());
           output_high = !output_high;
         } else {
           t = 500;
@@ -562,73 +562,73 @@
       return this.calculator.recalc(values);
     };
 
-    Visual555.prototype.add_component = function(component) {
+    Visual555.prototype.addComponent = function(component) {
       this.components.push(component);
       return component;
     };
 
-    Visual555.prototype.draw_circuit = function() {
+    Visual555.prototype.drawCircuit = function() {
       var c1, c2, gnd, r1, r2, r3, timer, vcc, width, y_gnd, y_vcc;
       y_vcc = 30;
       y_gnd = 340;
       width = 400;
-      vcc = this.add_component(new root.PowerRail({
+      vcc = this.addComponent(new root.PowerRail({
         y: y_vcc,
         width: width
       }));
-      gnd = this.add_component(new root.GroundRail({
+      gnd = this.addComponent(new root.GroundRail({
         y: y_gnd,
         width: width
       }));
-      r1 = this.add_component(new root.Resistor({
+      r1 = this.addComponent(new root.Resistor({
         x: 100,
         y: y_vcc + 20,
         label: 'R1'
       }));
-      r2 = this.add_component(new root.Resistor({
+      r2 = this.addComponent(new root.Resistor({
         x: 100,
         y: y_vcc + 100,
         label: 'R2'
       }));
-      c1 = this.add_component(new root.CeramicCapacitor({
+      c1 = this.addComponent(new root.CeramicCapacitor({
         x: 100,
         y: y_vcc + 170,
         label: 'C1'
       }));
-      timer = this.add_component(new root.LM555({
+      timer = this.addComponent(new root.LM555({
         x: 160,
         y: y_vcc + 70
       }));
-      c2 = this.add_component(new root.CeramicCapacitor({
+      c2 = this.addComponent(new root.CeramicCapacitor({
         x: 215,
         y: 220,
         label: 'C2'
       }));
-      r3 = this.add_component(new root.Resistor({
+      r3 = this.addComponent(new root.Resistor({
         x: 300,
         y: y_vcc + 130,
         label: 'R3'
       }));
-      this.output_led = this.add_component(new root.Led({
+      this.output_led = this.addComponent(new root.Led({
         x: 295,
         y: 230,
         color: 'red'
       }));
-      this.add_component(new root.ConnectingWire(vcc, 105, r1, '1'));
-      this.add_component(new root.ConnectingWire(r1, '2', r2, '1'));
-      this.add_component(new root.ConnectingWire(r2, '2', c1, '1'));
-      this.add_component(new root.ConnectingWire(c1, '2', gnd, 105));
-      this.add_component(new root.ConnectingWire(vcc, 200, timer, '8'));
-      this.add_component(new root.ConnectingWire(vcc, 220, timer, '4'));
-      this.add_component(new root.ConnectingWire(r2, '1', timer, '7'));
-      this.add_component(new root.ConnectingWire(r2, '2', timer, '2'));
-      this.add_component(new root.ConnectingWire(timer, '6', timer, '2'));
-      this.add_component(new root.ConnectingWire(timer, '1', gnd, 200));
-      this.add_component(new root.ConnectingWire(timer, '3', r3, '1'));
-      this.add_component(new root.ConnectingWire(r3, '2', this.output_led, '1'));
-      this.add_component(new root.ConnectingWire(this.output_led, '2', gnd, 305));
-      this.add_component(new root.ConnectingWire(timer, '5', c2, '1'));
-      this.add_component(new root.ConnectingWire(c2, '2', gnd, 220));
+      this.addComponent(new root.ConnectingWire(vcc, 105, r1, '1'));
+      this.addComponent(new root.ConnectingWire(r1, '2', r2, '1'));
+      this.addComponent(new root.ConnectingWire(r2, '2', c1, '1'));
+      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 105));
+      this.addComponent(new root.ConnectingWire(vcc, 200, timer, '8'));
+      this.addComponent(new root.ConnectingWire(vcc, 220, timer, '4'));
+      this.addComponent(new root.ConnectingWire(r2, '1', timer, '7'));
+      this.addComponent(new root.ConnectingWire(r2, '2', timer, '2'));
+      this.addComponent(new root.ConnectingWire(timer, '6', timer, '2'));
+      this.addComponent(new root.ConnectingWire(timer, '1', gnd, 200));
+      this.addComponent(new root.ConnectingWire(timer, '3', r3, '1'));
+      this.addComponent(new root.ConnectingWire(r3, '2', this.output_led, '1'));
+      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 305));
+      this.addComponent(new root.ConnectingWire(timer, '5', c2, '1'));
+      this.addComponent(new root.ConnectingWire(c2, '2', gnd, 220));
       return this.redraw();
     };
 
@@ -643,13 +643,13 @@
       return _results;
     };
 
-    Visual555.prototype.led_off = function() {
+    Visual555.prototype.ledOff = function() {
       if (this.output_led) {
         return this.output_led.draw(this.context, false);
       }
     };
 
-    Visual555.prototype.led_on = function() {
+    Visual555.prototype.ledOn = function() {
       if (this.output_led) {
         return this.output_led.draw(this.context, true);
       }

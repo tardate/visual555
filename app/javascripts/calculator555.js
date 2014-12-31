@@ -15,19 +15,19 @@
         r2: 0,
         c: 0,
         frequency: 0,
-        cycle_time: 0,
-        time_high: 0,
-        time_low: 0,
-        duty_cycle: 0
+        cycleTime: 0,
+        timeHigh: 0,
+        timeLow: 0,
+        dutyCycle: 0
       };
     };
 
-    Calculator555.prototype.time_high = function() {
-      return this.values.time_high;
+    Calculator555.prototype.timeHigh = function() {
+      return this.values.timeHigh;
     };
 
-    Calculator555.prototype.time_low = function() {
-      return this.values.time_low;
+    Calculator555.prototype.timeLow = function() {
+      return this.values.timeLow;
     };
 
     Calculator555.prototype.recalc = function(settings) {
@@ -35,10 +35,10 @@
         $.extend(this.values, settings);
       }
       this.values.frequency = 1.44 * 1000 / (this.values.r1 + 2 * this.values.r2) / this.values.c;
-      this.values.time_high = 0.693 * (this.values.r1 + this.values.r2) * this.values.c;
-      this.values.time_low = 0.693 * this.values.r2 * this.values.c;
-      this.values.cycle_time = this.values.time_high + this.values.time_low;
-      this.values.duty_cycle = this.values.time_high / this.values.cycle_time * 100.0;
+      this.values.timeHigh = 0.693 * (this.values.r1 + this.values.r2) * this.values.c;
+      this.values.timeLow = 0.693 * this.values.r2 * this.values.c;
+      this.values.cycleTime = this.values.timeHigh + this.values.timeLow;
+      this.values.dutyCycle = this.values.timeHigh / this.values.cycleTime * 100.0;
       return this.values;
     };
 
