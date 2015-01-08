@@ -108,75 +108,82 @@ class root.Visual555
     y_vcc = 30
     y_gnd = 340
     width = 400
+    x1 = 100
+    x2 = 330
 
     vcc = @addComponent( new root.PowerRail({ y: y_vcc, width: width }) )
     gnd = @addComponent( new root.GroundRail({ y: y_gnd, width: width }) )
 
-    r1 = @addComponent( new root.Resistor({ x: 100, y: y_vcc + 20, label: 'R1'}) )
-    r2 = @addComponent( new root.Resistor({ x: 100, y: y_vcc + 100, label: 'R2'}) )
-    c1 = @addComponent( new root.CeramicCapacitor({ x: 100, y: y_vcc + 180, label: 'C1'}) )
+    r1 = @addComponent( new root.Resistor({ x: x1, y: y_vcc + 20, label: 'R1'}) )
+    r2 = @addComponent( new root.Resistor({ x: x1, y: y_vcc + 100, label: 'R2'}) )
+    c1 = @addComponent( new root.CeramicCapacitor({ x: x1, y: y_vcc + 180, label: 'C1'}) )
 
     timer = @addComponent( new root.LM555({ x: 160, y: y_vcc + 70}) )
+    timer_5_x = timer.pinPosition('5').x
 
-    c2 = @addComponent( new root.CeramicCapacitor({ x: 220, y: 220, label: 'C2'}) )
+    c2 = @addComponent( new root.CeramicCapacitor({ x: timer_5_x, y: 220, label: 'C2'}) )
+    rl = @addComponent( new root.Resistor({ x: x2, y: y_vcc + 130, label: 'RL'}) )
+    @output_led = @addComponent( new root.Led({ x: x2, y: 230, color: 'red'}) )
 
-    rl = @addComponent( new root.Resistor({ x: 300, y: y_vcc + 130, label: 'RL'}) )
-    @output_led = @addComponent( new root.Led({ x: 300, y: 230, color: 'red'}) )
-
-    @addComponent( new root.ConnectingWire(vcc,100,r1,'1') )
+    @addComponent( new root.ConnectingWire(vcc,x1,r1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',r2,'1') )
     @addComponent( new root.ConnectingWire(r2,'2',c1,'1') )
-    @addComponent( new root.ConnectingWire(c1,'2',gnd,100) )
+    @addComponent( new root.ConnectingWire(c1,'2',gnd,x1) )
 
-    @addComponent( new root.ConnectingWire(vcc,200,timer,'8') )
-    @addComponent( new root.ConnectingWire(vcc,220,timer,'4') )
+    @addComponent( new root.ConnectingWire(vcc,timer.pinPosition('8').x,timer,'8') )
+    @addComponent( new root.ConnectingWire(vcc,timer.pinPosition('4').x,timer,'4') )
     @addComponent( new root.ConnectingWire(r2,'1',timer,'7') )
     @addComponent( new root.ConnectingWire(r2,'2',timer,'2') )
     @addComponent( new root.ConnectingWire(timer,'6',timer,'2') )
-    @addComponent( new root.ConnectingWire(timer,'1',gnd,200) )
+    @addComponent( new root.ConnectingWire(timer,'1',gnd,timer.pinPosition('1').x) )
     @addComponent( new root.ConnectingWire(timer,'3',rl,'1') )
     @addComponent( new root.ConnectingWire(rl,'2',@output_led,'1') )
-    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,300) )
+    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,x2) )
     @addComponent( new root.ConnectingWire(timer,'5',c2,'1') )
-    @addComponent( new root.ConnectingWire(c2,'2',gnd,220) )
+    @addComponent( new root.ConnectingWire(c2,'2',gnd,timer_5_x) )
 
   drawMonostableCircuit: ->
     y_vcc = 30
     y_gnd = 340
     width = 400
+    x1 = 70
+    x11= 120
+    x2 = 300
 
     vcc = @addComponent( new root.PowerRail({ y: y_vcc, width: width }) )
     gnd = @addComponent( new root.GroundRail({ y: y_gnd, width: width }) )
 
-    r1 = @addComponent( new root.Resistor({ x: 120, y: y_vcc + 40, label: 'R1'}) )
-    c1 = @addComponent( new root.CeramicCapacitor({ x: 120, y: y_vcc + 180, label: 'C1'}) )
+    rp = @addComponent( new root.Resistor({ x: x1, y: y_vcc + 100, label: 'RP'}) )
+    @switch = @addComponent( new root.SpstSwitch({ x: x1, y: y_vcc + 200, label: 'S1'}) )
+
+    r1 = @addComponent( new root.Resistor({ x: x11, y: y_vcc + 40, label: 'R1'}) )
+    c1 = @addComponent( new root.CeramicCapacitor({ x: x11, y: y_vcc + 180, label: 'C1'}) )
 
     timer = @addComponent( new root.LM555({ x: 160, y: y_vcc + 70}) )
+    timer_5_x = timer.pinPosition('5').x
 
-    c2 = @addComponent( new root.CeramicCapacitor({ x: 220, y: 220, label: 'C2'}) )
+    c2 = @addComponent( new root.CeramicCapacitor({ x: timer_5_x, y: 220, label: 'C2'}) )
 
-    rl = @addComponent( new root.Resistor({ x: 300, y: y_vcc + 130, label: 'RL'}) )
-    @output_led = @addComponent( new root.Led({ x: 300, y: 230, color: 'red'}) )
+    rl = @addComponent( new root.Resistor({ x: x2, y: y_vcc + 130, label: 'RL'}) )
+    @output_led = @addComponent( new root.Led({ x: x2, y: 230, color: 'red'}) )
 
-    rp = @addComponent( new root.Resistor({ x: 70, y: y_vcc + 100, label: 'RP'}) )
-    @switch = @addComponent( new root.SpstSwitch({ x: 70, y: y_vcc + 200, label: 'S1'}) )
 
-    @addComponent( new root.ConnectingWire(vcc,120,r1,'1') )
+    @addComponent( new root.ConnectingWire(vcc,x11,r1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',c1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',timer,'7') )
-    @addComponent( new root.ConnectingWire(c1,'2',gnd,120) )
+    @addComponent( new root.ConnectingWire(c1,'2',gnd,x11) )
 
-    @addComponent( new root.ConnectingWire(vcc,70,rp,'1') )
+    @addComponent( new root.ConnectingWire(vcc,x1,rp,'1') )
     @addComponent( new root.ConnectingWire(timer,'2',rp,'2') )
     @addComponent( new root.ConnectingWire(rp,'2',@switch,'1') )
-    @addComponent( new root.ConnectingWire(@switch,'2',gnd,70) )
+    @addComponent( new root.ConnectingWire(@switch,'2',gnd,x1) )
 
-    @addComponent( new root.ConnectingWire(vcc,200,timer,'8') )
-    @addComponent( new root.ConnectingWire(vcc,220,timer,'4') )
+    @addComponent( new root.ConnectingWire(vcc,timer.pinPosition('8').x,timer,'8') )
+    @addComponent( new root.ConnectingWire(vcc,timer.pinPosition('4').x,timer,'4') )
     @addComponent( new root.ConnectingWire(timer,'6',timer,'7') )
-    @addComponent( new root.ConnectingWire(timer,'1',gnd,200) )
+    @addComponent( new root.ConnectingWire(timer,'1',gnd,timer.pinPosition('1').x) )
     @addComponent( new root.ConnectingWire(timer,'3',rl,'1') )
     @addComponent( new root.ConnectingWire(rl,'2',@output_led,'1') )
-    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,300) )
+    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,x2) )
     @addComponent( new root.ConnectingWire(timer,'5',c2,'1') )
-    @addComponent( new root.ConnectingWire(c2,'2',gnd,220) )
+    @addComponent( new root.ConnectingWire(c2,'2',gnd,timer_5_x) )

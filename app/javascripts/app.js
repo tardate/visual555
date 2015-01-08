@@ -689,10 +689,12 @@
     };
 
     Visual555.prototype.drawAstableCircuit = function() {
-      var c1, c2, gnd, r1, r2, rl, timer, vcc, width, y_gnd, y_vcc;
+      var c1, c2, gnd, r1, r2, rl, timer, timer_5_x, vcc, width, x1, x2, y_gnd, y_vcc;
       y_vcc = 30;
       y_gnd = 340;
       width = 400;
+      x1 = 100;
+      x2 = 330;
       vcc = this.addComponent(new root.PowerRail({
         y: y_vcc,
         width: width
@@ -702,17 +704,17 @@
         width: width
       }));
       r1 = this.addComponent(new root.Resistor({
-        x: 100,
+        x: x1,
         y: y_vcc + 20,
         label: 'R1'
       }));
       r2 = this.addComponent(new root.Resistor({
-        x: 100,
+        x: x1,
         y: y_vcc + 100,
         label: 'R2'
       }));
       c1 = this.addComponent(new root.CeramicCapacitor({
-        x: 100,
+        x: x1,
         y: y_vcc + 180,
         label: 'C1'
       }));
@@ -720,43 +722,47 @@
         x: 160,
         y: y_vcc + 70
       }));
+      timer_5_x = timer.pinPosition('5').x;
       c2 = this.addComponent(new root.CeramicCapacitor({
-        x: 220,
+        x: timer_5_x,
         y: 220,
         label: 'C2'
       }));
       rl = this.addComponent(new root.Resistor({
-        x: 300,
+        x: x2,
         y: y_vcc + 130,
         label: 'RL'
       }));
       this.output_led = this.addComponent(new root.Led({
-        x: 300,
+        x: x2,
         y: 230,
         color: 'red'
       }));
-      this.addComponent(new root.ConnectingWire(vcc, 100, r1, '1'));
+      this.addComponent(new root.ConnectingWire(vcc, x1, r1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', r2, '1'));
       this.addComponent(new root.ConnectingWire(r2, '2', c1, '1'));
-      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 100));
-      this.addComponent(new root.ConnectingWire(vcc, 200, timer, '8'));
-      this.addComponent(new root.ConnectingWire(vcc, 220, timer, '4'));
+      this.addComponent(new root.ConnectingWire(c1, '2', gnd, x1));
+      this.addComponent(new root.ConnectingWire(vcc, timer.pinPosition('8').x, timer, '8'));
+      this.addComponent(new root.ConnectingWire(vcc, timer.pinPosition('4').x, timer, '4'));
       this.addComponent(new root.ConnectingWire(r2, '1', timer, '7'));
       this.addComponent(new root.ConnectingWire(r2, '2', timer, '2'));
       this.addComponent(new root.ConnectingWire(timer, '6', timer, '2'));
-      this.addComponent(new root.ConnectingWire(timer, '1', gnd, 200));
+      this.addComponent(new root.ConnectingWire(timer, '1', gnd, timer.pinPosition('1').x));
       this.addComponent(new root.ConnectingWire(timer, '3', rl, '1'));
       this.addComponent(new root.ConnectingWire(rl, '2', this.output_led, '1'));
-      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 300));
+      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, x2));
       this.addComponent(new root.ConnectingWire(timer, '5', c2, '1'));
-      return this.addComponent(new root.ConnectingWire(c2, '2', gnd, 220));
+      return this.addComponent(new root.ConnectingWire(c2, '2', gnd, timer_5_x));
     };
 
     Visual555.prototype.drawMonostableCircuit = function() {
-      var c1, c2, gnd, r1, rl, rp, timer, vcc, width, y_gnd, y_vcc;
+      var c1, c2, gnd, r1, rl, rp, timer, timer_5_x, vcc, width, x1, x11, x2, y_gnd, y_vcc;
       y_vcc = 30;
       y_gnd = 340;
       width = 400;
+      x1 = 70;
+      x11 = 120;
+      x2 = 300;
       vcc = this.addComponent(new root.PowerRail({
         y: y_vcc,
         width: width
@@ -765,13 +771,23 @@
         y: y_gnd,
         width: width
       }));
+      rp = this.addComponent(new root.Resistor({
+        x: x1,
+        y: y_vcc + 100,
+        label: 'RP'
+      }));
+      this["switch"] = this.addComponent(new root.SpstSwitch({
+        x: x1,
+        y: y_vcc + 200,
+        label: 'S1'
+      }));
       r1 = this.addComponent(new root.Resistor({
-        x: 120,
+        x: x11,
         y: y_vcc + 40,
         label: 'R1'
       }));
       c1 = this.addComponent(new root.CeramicCapacitor({
-        x: 120,
+        x: x11,
         y: y_vcc + 180,
         label: 'C1'
       }));
@@ -779,48 +795,39 @@
         x: 160,
         y: y_vcc + 70
       }));
+      timer_5_x = timer.pinPosition('5').x;
       c2 = this.addComponent(new root.CeramicCapacitor({
-        x: 220,
+        x: timer_5_x,
         y: 220,
         label: 'C2'
       }));
       rl = this.addComponent(new root.Resistor({
-        x: 300,
+        x: x2,
         y: y_vcc + 130,
         label: 'RL'
       }));
       this.output_led = this.addComponent(new root.Led({
-        x: 300,
+        x: x2,
         y: 230,
         color: 'red'
       }));
-      rp = this.addComponent(new root.Resistor({
-        x: 70,
-        y: y_vcc + 100,
-        label: 'RP'
-      }));
-      this["switch"] = this.addComponent(new root.SpstSwitch({
-        x: 70,
-        y: y_vcc + 200,
-        label: 'S1'
-      }));
-      this.addComponent(new root.ConnectingWire(vcc, 120, r1, '1'));
+      this.addComponent(new root.ConnectingWire(vcc, x11, r1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', c1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', timer, '7'));
-      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 120));
-      this.addComponent(new root.ConnectingWire(vcc, 70, rp, '1'));
+      this.addComponent(new root.ConnectingWire(c1, '2', gnd, x11));
+      this.addComponent(new root.ConnectingWire(vcc, x1, rp, '1'));
       this.addComponent(new root.ConnectingWire(timer, '2', rp, '2'));
       this.addComponent(new root.ConnectingWire(rp, '2', this["switch"], '1'));
-      this.addComponent(new root.ConnectingWire(this["switch"], '2', gnd, 70));
-      this.addComponent(new root.ConnectingWire(vcc, 200, timer, '8'));
-      this.addComponent(new root.ConnectingWire(vcc, 220, timer, '4'));
+      this.addComponent(new root.ConnectingWire(this["switch"], '2', gnd, x1));
+      this.addComponent(new root.ConnectingWire(vcc, timer.pinPosition('8').x, timer, '8'));
+      this.addComponent(new root.ConnectingWire(vcc, timer.pinPosition('4').x, timer, '4'));
       this.addComponent(new root.ConnectingWire(timer, '6', timer, '7'));
-      this.addComponent(new root.ConnectingWire(timer, '1', gnd, 200));
+      this.addComponent(new root.ConnectingWire(timer, '1', gnd, timer.pinPosition('1').x));
       this.addComponent(new root.ConnectingWire(timer, '3', rl, '1'));
       this.addComponent(new root.ConnectingWire(rl, '2', this.output_led, '1'));
-      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 300));
+      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, x2));
       this.addComponent(new root.ConnectingWire(timer, '5', c2, '1'));
-      return this.addComponent(new root.ConnectingWire(c2, '2', gnd, 220));
+      return this.addComponent(new root.ConnectingWire(c2, '2', gnd, timer_5_x));
     };
 
     return Visual555;
