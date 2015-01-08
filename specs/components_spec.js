@@ -6,6 +6,24 @@ describe("Component()", function() {
     expect(subject.values.y).toEqual(0);
     expect(subject.values.width).toEqual(100);
     expect(subject.values.height).toEqual(100);
+    expect(subject.values.xLeft).toEqual(0);
+    expect(subject.values.xCenter).toEqual(50);
+    expect(subject.values.xRight).toEqual(100);
+  });
+
+});
+
+describe("AxialComponent()", function() {
+  var subject = new AxialComponent();
+
+  it("should construct object with default values reset", function() {
+    expect(subject.values.x).toEqual(0);
+    expect(subject.values.y).toEqual(0);
+    expect(subject.values.width).toEqual(100);
+    expect(subject.values.height).toEqual(100);
+    expect(subject.values.xLeft).toEqual(-50);
+    expect(subject.values.xCenter).toEqual(0);
+    expect(subject.values.xRight).toEqual(50);
   });
 
 });

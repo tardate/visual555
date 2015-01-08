@@ -1,12 +1,13 @@
 root = exports ? this
 
-# Base model for drawing components
+# Base model for drawing components where x,y is top left corner
 class root.Component
 
   constructor: (settings) ->
     @values = @baseDefaults()
     $.extend(@values, @componentDefaults())
     $.extend(@values, settings) if settings
+    @recalcDerivedValues()
     @pins = @pinPositions()
 
   # Returns the base set of common defaults
@@ -24,6 +25,15 @@ class root.Component
       textBaseline: 'top',
     }
 
+  # Command: when settings are changed/initialised, this calculated derived values
+  recalcDerivedValues: ->
+    @values.xLeft = @derivedLeft()
+    @values.xRight = @values.xLeft+ @values.width
+    @values.xCenter = @values.xLeft + @values.width / 2
+
+  derivedLeft: ->
+    @values.x
+
   # Returns component-specific defaults (override in specific components)
   componentDefaults: ->
     {}
@@ -40,9 +50,21 @@ class root.Component
   pinPositions: ->
     {}
 
+# Generalised component that is centered
+class root.AxialComponent  extends root.Component
+
+  derivedLeft: ->
+    @values.x - @values.width / 2
+
+  pinPositions: ->
+    pp = {}
+    pp['1'] = { x: @values.xCenter, y: @values.y }
+    pp['2'] = { x: @values.xCenter, y: @values.y + @values.height }
+    pp
+
 
 # Resistor component
-class root.Resistor  extends root.Component
+class root.Resistor  extends root.AxialComponent
 
   componentDefaults: ->
     {
@@ -50,34 +72,28 @@ class root.Resistor  extends root.Component
       height: 60,
     }
 
-  pinPositions: ->
-    pp = {}
-    pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
-    pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
-    pp
-
   draw: (context)->
     context.beginPath()
     context.strokeStyle  = 'black'
     context.fillStyle = 'black'
-    context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
-    context.moveTo(@values.x + @values.width / 2, @values.y)
+    context.fillText(@values.label, @values.xRight + 3, @values.y + @values.height / 2 - 7)
+    context.moveTo(@values.xCenter, @values.y)
     y_step = (@values.height - 2 * @values.connectorStandoff) / 16
     y = @values.y + @values.connectorStandoff
-    context.lineTo(@values.x + @values.width / 2, y)
+    context.lineTo(@values.xCenter, y)
     y += y_step
-    context.lineTo(@values.x + @values.width, y)
+    context.lineTo(@values.xRight, y)
     for i in [0..2] by 1
       y += y_step * 2
-      context.lineTo(@values.x, y)
+      context.lineTo(@values.xLeft, y)
       y += y_step * 2
-      context.lineTo(@values.x + @values.width, y)
+      context.lineTo(@values.xRight, y)
     y += y_step * 2
-    context.lineTo(@values.x, y)
+    context.lineTo(@values.xLeft, y)
     y += y_step
-    context.lineTo(@values.x + @values.width / 2, y)
+    context.lineTo(@values.xCenter, y)
 
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
+    context.lineTo(@values.xCenter, @values.y + @values.height)
     context.stroke()
     context.closePath()
     return
@@ -85,7 +101,7 @@ class root.Resistor  extends root.Component
 
 
 # Ceramic Capacitor component
-class root.CeramicCapacitor extends root.Component
+class root.CeramicCapacitor extends root.AxialComponent
 
   componentDefaults: ->
     {
@@ -94,23 +110,17 @@ class root.CeramicCapacitor extends root.Component
       lineWidth: 2,
     }
 
-  pinPositions: ->
-    pp = {}
-    pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
-    pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
-    pp
-
   draw: (context)->
     context.beginPath()
     context.strokeStyle = 'black'
     context.fillStyle = 'black'
-    context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
-    context.rect(@values.x, @values.y + @values.connectorStandoff, @values.width, @values.lineWidth)
-    context.rect(@values.x, @values.y + @values.height - @values.connectorStandoff, @values.width, @values.lineWidth)
-    context.moveTo(@values.x + @values.width / 2, @values.y)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
+    context.fillText(@values.label, @values.xRight + 3, @values.y + @values.height / 2 - 7)
+    context.rect(@values.xLeft, @values.y + @values.connectorStandoff, @values.width, @values.lineWidth)
+    context.rect(@values.xLeft, @values.y + @values.height - @values.connectorStandoff, @values.width, @values.lineWidth)
+    context.moveTo(@values.xCenter, @values.y)
+    context.lineTo(@values.xCenter, @values.y + @values.connectorStandoff)
+    context.moveTo(@values.xCenter, @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.xCenter, @values.y + @values.height)
     context.fill()
     context.stroke()
     context.closePath()
@@ -118,7 +128,7 @@ class root.CeramicCapacitor extends root.Component
 
 
 # SPST NO switch component
-class root.SpstSwitch extends root.Component
+class root.SpstSwitch extends root.AxialComponent
 
   componentDefaults: ->
     {
@@ -126,34 +136,29 @@ class root.SpstSwitch extends root.Component
       height: 40,
     }
 
-  pinPositions: ->
-    pp = {}
-    pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
-    pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
-    pp
 
   draw: (context,with_switch_closed)->
     context.beginPath()
     context.strokeStyle = 'black'
     context.fillStyle = 'black'
 
-    context.clearRect(@values.x - 1, @values.y + 1, @values.width + 20,@values.height - 2) # this is a hack to make redraw animation leave a clean canvas
+    context.clearRect(@values.xLeft - 1, @values.y + 1, @values.width + 20,@values.height - 2) # this is a hack to make redraw animation leave a clean canvas
 
-    context.fillText(@values.label, @values.x + @values.width + 3, @values.y + @values.height / 2 - 7)
-    context.moveTo(@values.x + @values.width / 2, @values.y)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
+    context.fillText(@values.label, @values.xRight + 3, @values.y + @values.height / 2 - 7)
+    context.moveTo(@values.xCenter, @values.y)
+    context.lineTo(@values.xCenter, @values.y + @values.connectorStandoff)
+    context.moveTo(@values.xCenter, @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.xCenter, @values.y + @values.height)
+    context.moveTo(@values.xCenter, @values.y + @values.height - @values.connectorStandoff)
     if with_switch_closed
-      context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
+      context.lineTo(@values.xCenter, @values.y + @values.connectorStandoff)
     else
-      context.lineTo(@values.x , @values.y + @values.connectorStandoff)
+      context.lineTo(@values.xLeft, @values.y + @values.connectorStandoff)
 
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
-    context.arc(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff, 2, 0, 2 * Math.PI);
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.arc(@values.x + @values.width / 2, @values.y + @values.connectorStandoff, 2, 0, 2 * Math.PI);
+    context.moveTo(@values.xCenter, @values.y + @values.height - @values.connectorStandoff)
+    context.arc(@values.xCenter, @values.y + @values.height - @values.connectorStandoff, 2, 0, 2 * Math.PI);
+    context.moveTo(@values.xCenter, @values.y + @values.connectorStandoff)
+    context.arc(@values.xCenter, @values.y + @values.connectorStandoff, 2, 0, 2 * Math.PI);
     context.fill()
     context.stroke()
     context.closePath()
@@ -161,7 +166,7 @@ class root.SpstSwitch extends root.Component
 
 
 # LED component
-class root.Led extends root.Component
+class root.Led extends root.AxialComponent
 
   componentDefaults: ->
     {
@@ -169,12 +174,6 @@ class root.Led extends root.Component
       height: 30,
       color: 'red',
     }
-
-  pinPositions: ->
-    pp = {}
-    pp['1'] = { x: @values.x + @values.width / 2, y: @values.y }
-    pp['2'] = { x: @values.x + @values.width / 2, y: @values.y + @values.height }
-    pp
 
   draw: (context,with_led_on)->
     component_color = if with_led_on
@@ -184,10 +183,10 @@ class root.Led extends root.Component
 
     context.beginPath()
     context.strokeStyle = 'black'
-    context.moveTo(@values.x + @values.width / 2, @values.y)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.connectorStandoff)
-    context.moveTo(@values.x + @values.width / 2, @values.y + @values.height - @values.connectorStandoff)
-    context.lineTo(@values.x + @values.width / 2, @values.y + @values.height)
+    context.moveTo(@values.xCenter, @values.y)
+    context.lineTo(@values.xCenter, @values.y + @values.connectorStandoff)
+    context.moveTo(@values.xCenter, @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.xCenter, @values.y + @values.height)
     context.stroke()
     context.closePath()
 
@@ -195,18 +194,18 @@ class root.Led extends root.Component
     context.strokeStyle = component_color
     context.fillStyle = component_color
 
-    context.moveTo(@values.x + @values.width,      @values.y + @values.connectorStandoff)
-    context.lineTo(@values.x,                      @values.y + @values.connectorStandoff)
-    context.lineTo(@values.x + @values.width / 2,  @values.y + @values.height - @values.connectorStandoff)
-    context.lineTo(@values.x + @values.width,      @values.y + @values.connectorStandoff)
+    context.moveTo(@values.xRight,   @values.y + @values.connectorStandoff)
+    context.lineTo(@values.xLeft,    @values.y + @values.connectorStandoff)
+    context.lineTo(@values.xCenter,  @values.y + @values.height - @values.connectorStandoff)
+    context.lineTo(@values.xRight,   @values.y + @values.connectorStandoff)
 
-    ray_offset = @values.x - 2
+    ray_offset = @values.xLeft - 2
     context.moveTo(ray_offset - 1, @values.y + 13)
     context.lineTo(ray_offset - 6, @values.y + 19)
     context.moveTo(ray_offset,     @values.y + 17)
     context.lineTo(ray_offset - 5, @values.y + 23)
 
-    context.rect(@values.x, @values.y + @values.height - @values.connectorStandoff + 1, @values.width, 2)
+    context.rect(@values.xLeft, @values.y + @values.height - @values.connectorStandoff + 1, @values.width, 2)
     context.fill()
     context.stroke()
     context.closePath()

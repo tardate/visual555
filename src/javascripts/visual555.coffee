@@ -118,15 +118,15 @@ class root.Visual555
 
     timer = @addComponent( new root.LM555({ x: 160, y: y_vcc + 70}) )
 
-    c2 = @addComponent( new root.CeramicCapacitor({ x: 215, y: 220, label: 'C2'}) )
+    c2 = @addComponent( new root.CeramicCapacitor({ x: 220, y: 220, label: 'C2'}) )
 
     rl = @addComponent( new root.Resistor({ x: 300, y: y_vcc + 130, label: 'RL'}) )
-    @output_led = @addComponent( new root.Led({ x: 295, y: 230, color: 'red'}) )
+    @output_led = @addComponent( new root.Led({ x: 300, y: 230, color: 'red'}) )
 
-    @addComponent( new root.ConnectingWire(vcc,105,r1,'1') )
+    @addComponent( new root.ConnectingWire(vcc,100,r1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',r2,'1') )
     @addComponent( new root.ConnectingWire(r2,'2',c1,'1') )
-    @addComponent( new root.ConnectingWire(c1,'2',gnd,105) )
+    @addComponent( new root.ConnectingWire(c1,'2',gnd,100) )
 
     @addComponent( new root.ConnectingWire(vcc,200,timer,'8') )
     @addComponent( new root.ConnectingWire(vcc,220,timer,'4') )
@@ -136,7 +136,7 @@ class root.Visual555
     @addComponent( new root.ConnectingWire(timer,'1',gnd,200) )
     @addComponent( new root.ConnectingWire(timer,'3',rl,'1') )
     @addComponent( new root.ConnectingWire(rl,'2',@output_led,'1') )
-    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,305) )
+    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,300) )
     @addComponent( new root.ConnectingWire(timer,'5',c2,'1') )
     @addComponent( new root.ConnectingWire(c2,'2',gnd,220) )
 
@@ -153,23 +153,23 @@ class root.Visual555
 
     timer = @addComponent( new root.LM555({ x: 160, y: y_vcc + 70}) )
 
-    c2 = @addComponent( new root.CeramicCapacitor({ x: 215, y: 220, label: 'C2'}) )
+    c2 = @addComponent( new root.CeramicCapacitor({ x: 220, y: 220, label: 'C2'}) )
 
     rl = @addComponent( new root.Resistor({ x: 300, y: y_vcc + 130, label: 'RL'}) )
-    @output_led = @addComponent( new root.Led({ x: 295, y: 230, color: 'red'}) )
+    @output_led = @addComponent( new root.Led({ x: 300, y: 230, color: 'red'}) )
 
     rp = @addComponent( new root.Resistor({ x: 70, y: y_vcc + 100, label: 'RP'}) )
-    @switch = @addComponent( new root.SpstSwitch({ x: 65, y: y_vcc + 200, label: 'S1'}) )
+    @switch = @addComponent( new root.SpstSwitch({ x: 70, y: y_vcc + 200, label: 'S1'}) )
 
-    @addComponent( new root.ConnectingWire(vcc,125,r1,'1') )
+    @addComponent( new root.ConnectingWire(vcc,120,r1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',c1,'1') )
     @addComponent( new root.ConnectingWire(r1,'2',timer,'7') )
-    @addComponent( new root.ConnectingWire(c1,'2',gnd,125) )
+    @addComponent( new root.ConnectingWire(c1,'2',gnd,120) )
 
-    @addComponent( new root.ConnectingWire(vcc,75,rp,'1') )
+    @addComponent( new root.ConnectingWire(vcc,70,rp,'1') )
     @addComponent( new root.ConnectingWire(timer,'2',rp,'2') )
     @addComponent( new root.ConnectingWire(rp,'2',@switch,'1') )
-    @addComponent( new root.ConnectingWire(@switch,'2',gnd,75) )
+    @addComponent( new root.ConnectingWire(@switch,'2',gnd,70) )
 
     @addComponent( new root.ConnectingWire(vcc,200,timer,'8') )
     @addComponent( new root.ConnectingWire(vcc,220,timer,'4') )
@@ -177,6 +177,6 @@ class root.Visual555
     @addComponent( new root.ConnectingWire(timer,'1',gnd,200) )
     @addComponent( new root.ConnectingWire(timer,'3',rl,'1') )
     @addComponent( new root.ConnectingWire(rl,'2',@output_led,'1') )
-    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,305) )
+    @addComponent( new root.ConnectingWire(@output_led,'2',gnd,300) )
     @addComponent( new root.ConnectingWire(timer,'5',c2,'1') )
     @addComponent( new root.ConnectingWire(c2,'2',gnd,220) )

@@ -90,6 +90,7 @@
       if (settings) {
         $.extend(this.values, settings);
       }
+      this.recalcDerivedValues();
       this.pins = this.pinPositions();
     }
 
@@ -106,6 +107,16 @@
         font: '14px monospace',
         textBaseline: 'top'
       };
+    };
+
+    Component.prototype.recalcDerivedValues = function() {
+      this.values.xLeft = this.derivedLeft();
+      this.values.xRight = this.values.xLeft + this.values.width;
+      return this.values.xCenter = this.values.xLeft + this.values.width / 2;
+    };
+
+    Component.prototype.derivedLeft = function() {
+      return this.values.x;
     };
 
     Component.prototype.componentDefaults = function() {
@@ -126,6 +137,35 @@
 
   })();
 
+  root.AxialComponent = (function(_super) {
+    __extends(AxialComponent, _super);
+
+    function AxialComponent() {
+      return AxialComponent.__super__.constructor.apply(this, arguments);
+    }
+
+    AxialComponent.prototype.derivedLeft = function() {
+      return this.values.x - this.values.width / 2;
+    };
+
+    AxialComponent.prototype.pinPositions = function() {
+      var pp;
+      pp = {};
+      pp['1'] = {
+        x: this.values.xCenter,
+        y: this.values.y
+      };
+      pp['2'] = {
+        x: this.values.xCenter,
+        y: this.values.y + this.values.height
+      };
+      return pp;
+    };
+
+    return AxialComponent;
+
+  })(root.Component);
+
   root.Resistor = (function(_super) {
     __extends(Resistor, _super);
 
@@ -140,50 +180,36 @@
       };
     };
 
-    Resistor.prototype.pinPositions = function() {
-      var pp;
-      pp = {};
-      pp['1'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y
-      };
-      pp['2'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y + this.values.height
-      };
-      return pp;
-    };
-
     Resistor.prototype.draw = function(context) {
       var i, y, y_step, _i;
       context.beginPath();
       context.strokeStyle = 'black';
       context.fillStyle = 'black';
-      context.fillText(this.values.label, this.values.x + this.values.width + 3, this.values.y + this.values.height / 2 - 7);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
+      context.fillText(this.values.label, this.values.xRight + 3, this.values.y + this.values.height / 2 - 7);
+      context.moveTo(this.values.xCenter, this.values.y);
       y_step = (this.values.height - 2 * this.values.connectorStandoff) / 16;
       y = this.values.y + this.values.connectorStandoff;
-      context.lineTo(this.values.x + this.values.width / 2, y);
+      context.lineTo(this.values.xCenter, y);
       y += y_step;
-      context.lineTo(this.values.x + this.values.width, y);
+      context.lineTo(this.values.xRight, y);
       for (i = _i = 0; _i <= 2; i = _i += 1) {
         y += y_step * 2;
-        context.lineTo(this.values.x, y);
+        context.lineTo(this.values.xLeft, y);
         y += y_step * 2;
-        context.lineTo(this.values.x + this.values.width, y);
+        context.lineTo(this.values.xRight, y);
       }
       y += y_step * 2;
-      context.lineTo(this.values.x, y);
+      context.lineTo(this.values.xLeft, y);
       y += y_step;
-      context.lineTo(this.values.x + this.values.width / 2, y);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
+      context.lineTo(this.values.xCenter, y);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.height);
       context.stroke();
       context.closePath();
     };
 
     return Resistor;
 
-  })(root.Component);
+  })(root.AxialComponent);
 
   root.CeramicCapacitor = (function(_super) {
     __extends(CeramicCapacitor, _super);
@@ -200,31 +226,17 @@
       };
     };
 
-    CeramicCapacitor.prototype.pinPositions = function() {
-      var pp;
-      pp = {};
-      pp['1'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y
-      };
-      pp['2'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y + this.values.height
-      };
-      return pp;
-    };
-
     CeramicCapacitor.prototype.draw = function(context) {
       context.beginPath();
       context.strokeStyle = 'black';
       context.fillStyle = 'black';
-      context.fillText(this.values.label, this.values.x + this.values.width + 3, this.values.y + this.values.height / 2 - 7);
-      context.rect(this.values.x, this.values.y + this.values.connectorStandoff, this.values.width, this.values.lineWidth);
-      context.rect(this.values.x, this.values.y + this.values.height - this.values.connectorStandoff, this.values.width, this.values.lineWidth);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
+      context.fillText(this.values.label, this.values.xRight + 3, this.values.y + this.values.height / 2 - 7);
+      context.rect(this.values.xLeft, this.values.y + this.values.connectorStandoff, this.values.width, this.values.lineWidth);
+      context.rect(this.values.xLeft, this.values.y + this.values.height - this.values.connectorStandoff, this.values.width, this.values.lineWidth);
+      context.moveTo(this.values.xCenter, this.values.y);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.height);
       context.fill();
       context.stroke();
       context.closePath();
@@ -232,7 +244,7 @@
 
     return CeramicCapacitor;
 
-  })(root.Component);
+  })(root.AxialComponent);
 
   root.SpstSwitch = (function(_super) {
     __extends(SpstSwitch, _super);
@@ -248,40 +260,26 @@
       };
     };
 
-    SpstSwitch.prototype.pinPositions = function() {
-      var pp;
-      pp = {};
-      pp['1'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y
-      };
-      pp['2'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y + this.values.height
-      };
-      return pp;
-    };
-
     SpstSwitch.prototype.draw = function(context, with_switch_closed) {
       context.beginPath();
       context.strokeStyle = 'black';
       context.fillStyle = 'black';
-      context.clearRect(this.values.x - 1, this.values.y + 1, this.values.width + 20, this.values.height - 2);
-      context.fillText(this.values.label, this.values.x + this.values.width + 3, this.values.y + this.values.height / 2 - 7);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.clearRect(this.values.xLeft - 1, this.values.y + 1, this.values.width + 20, this.values.height - 2);
+      context.fillText(this.values.label, this.values.xRight + 3, this.values.y + this.values.height / 2 - 7);
+      context.moveTo(this.values.xCenter, this.values.y);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.height);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
       if (with_switch_closed) {
-        context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
+        context.lineTo(this.values.xCenter, this.values.y + this.values.connectorStandoff);
       } else {
-        context.lineTo(this.values.x, this.values.y + this.values.connectorStandoff);
+        context.lineTo(this.values.xLeft, this.values.y + this.values.connectorStandoff);
       }
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
-      context.arc(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff, 2, 0, 2 * Math.PI);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
-      context.arc(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff, 2, 0, 2 * Math.PI);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.arc(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff, 2, 0, 2 * Math.PI);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.connectorStandoff);
+      context.arc(this.values.xCenter, this.values.y + this.values.connectorStandoff, 2, 0, 2 * Math.PI);
       context.fill();
       context.stroke();
       context.closePath();
@@ -289,7 +287,7 @@
 
     return SpstSwitch;
 
-  })(root.Component);
+  })(root.AxialComponent);
 
   root.Led = (function(_super) {
     __extends(Led, _super);
@@ -306,44 +304,30 @@
       };
     };
 
-    Led.prototype.pinPositions = function() {
-      var pp;
-      pp = {};
-      pp['1'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y
-      };
-      pp['2'] = {
-        x: this.values.x + this.values.width / 2,
-        y: this.values.y + this.values.height
-      };
-      return pp;
-    };
-
     Led.prototype.draw = function(context, with_led_on) {
       var component_color, ray_offset;
       component_color = with_led_on ? this.values.color : 'black';
       context.beginPath();
       context.strokeStyle = 'black';
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.connectorStandoff);
-      context.moveTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height);
+      context.moveTo(this.values.xCenter, this.values.y);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.connectorStandoff);
+      context.moveTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.height);
       context.stroke();
       context.closePath();
       context.beginPath();
       context.strokeStyle = component_color;
       context.fillStyle = component_color;
-      context.moveTo(this.values.x + this.values.width, this.values.y + this.values.connectorStandoff);
-      context.lineTo(this.values.x, this.values.y + this.values.connectorStandoff);
-      context.lineTo(this.values.x + this.values.width / 2, this.values.y + this.values.height - this.values.connectorStandoff);
-      context.lineTo(this.values.x + this.values.width, this.values.y + this.values.connectorStandoff);
-      ray_offset = this.values.x - 2;
+      context.moveTo(this.values.xRight, this.values.y + this.values.connectorStandoff);
+      context.lineTo(this.values.xLeft, this.values.y + this.values.connectorStandoff);
+      context.lineTo(this.values.xCenter, this.values.y + this.values.height - this.values.connectorStandoff);
+      context.lineTo(this.values.xRight, this.values.y + this.values.connectorStandoff);
+      ray_offset = this.values.xLeft - 2;
       context.moveTo(ray_offset - 1, this.values.y + 13);
       context.lineTo(ray_offset - 6, this.values.y + 19);
       context.moveTo(ray_offset, this.values.y + 17);
       context.lineTo(ray_offset - 5, this.values.y + 23);
-      context.rect(this.values.x, this.values.y + this.values.height - this.values.connectorStandoff + 1, this.values.width, 2);
+      context.rect(this.values.xLeft, this.values.y + this.values.height - this.values.connectorStandoff + 1, this.values.width, 2);
       context.fill();
       context.stroke();
       context.closePath();
@@ -351,7 +335,7 @@
 
     return Led;
 
-  })(root.Component);
+  })(root.AxialComponent);
 
   root.LM555 = (function(_super) {
     __extends(LM555, _super);
@@ -737,7 +721,7 @@
         y: y_vcc + 70
       }));
       c2 = this.addComponent(new root.CeramicCapacitor({
-        x: 215,
+        x: 220,
         y: 220,
         label: 'C2'
       }));
@@ -747,14 +731,14 @@
         label: 'RL'
       }));
       this.output_led = this.addComponent(new root.Led({
-        x: 295,
+        x: 300,
         y: 230,
         color: 'red'
       }));
-      this.addComponent(new root.ConnectingWire(vcc, 105, r1, '1'));
+      this.addComponent(new root.ConnectingWire(vcc, 100, r1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', r2, '1'));
       this.addComponent(new root.ConnectingWire(r2, '2', c1, '1'));
-      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 105));
+      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 100));
       this.addComponent(new root.ConnectingWire(vcc, 200, timer, '8'));
       this.addComponent(new root.ConnectingWire(vcc, 220, timer, '4'));
       this.addComponent(new root.ConnectingWire(r2, '1', timer, '7'));
@@ -763,7 +747,7 @@
       this.addComponent(new root.ConnectingWire(timer, '1', gnd, 200));
       this.addComponent(new root.ConnectingWire(timer, '3', rl, '1'));
       this.addComponent(new root.ConnectingWire(rl, '2', this.output_led, '1'));
-      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 305));
+      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 300));
       this.addComponent(new root.ConnectingWire(timer, '5', c2, '1'));
       return this.addComponent(new root.ConnectingWire(c2, '2', gnd, 220));
     };
@@ -796,7 +780,7 @@
         y: y_vcc + 70
       }));
       c2 = this.addComponent(new root.CeramicCapacitor({
-        x: 215,
+        x: 220,
         y: 220,
         label: 'C2'
       }));
@@ -806,7 +790,7 @@
         label: 'RL'
       }));
       this.output_led = this.addComponent(new root.Led({
-        x: 295,
+        x: 300,
         y: 230,
         color: 'red'
       }));
@@ -816,25 +800,25 @@
         label: 'RP'
       }));
       this["switch"] = this.addComponent(new root.SpstSwitch({
-        x: 65,
+        x: 70,
         y: y_vcc + 200,
         label: 'S1'
       }));
-      this.addComponent(new root.ConnectingWire(vcc, 125, r1, '1'));
+      this.addComponent(new root.ConnectingWire(vcc, 120, r1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', c1, '1'));
       this.addComponent(new root.ConnectingWire(r1, '2', timer, '7'));
-      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 125));
-      this.addComponent(new root.ConnectingWire(vcc, 75, rp, '1'));
+      this.addComponent(new root.ConnectingWire(c1, '2', gnd, 120));
+      this.addComponent(new root.ConnectingWire(vcc, 70, rp, '1'));
       this.addComponent(new root.ConnectingWire(timer, '2', rp, '2'));
       this.addComponent(new root.ConnectingWire(rp, '2', this["switch"], '1'));
-      this.addComponent(new root.ConnectingWire(this["switch"], '2', gnd, 75));
+      this.addComponent(new root.ConnectingWire(this["switch"], '2', gnd, 70));
       this.addComponent(new root.ConnectingWire(vcc, 200, timer, '8'));
       this.addComponent(new root.ConnectingWire(vcc, 220, timer, '4'));
       this.addComponent(new root.ConnectingWire(timer, '6', timer, '7'));
       this.addComponent(new root.ConnectingWire(timer, '1', gnd, 200));
       this.addComponent(new root.ConnectingWire(timer, '3', rl, '1'));
       this.addComponent(new root.ConnectingWire(rl, '2', this.output_led, '1'));
-      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 305));
+      this.addComponent(new root.ConnectingWire(this.output_led, '2', gnd, 300));
       this.addComponent(new root.ConnectingWire(timer, '5', c2, '1'));
       return this.addComponent(new root.ConnectingWire(c2, '2', gnd, 220));
     };
