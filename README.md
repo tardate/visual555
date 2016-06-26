@@ -4,6 +4,7 @@ Yet another 555 timer calculator. See this running live at [visual555.tardate.co
 
 Why? To play around with HTML5 simulation of the 555 timer circuit, and also demonstrate a grunt + coffeescript toolchain.
 
+
 ## Installation for Development
 
 To hack on this, you need a recent `npm` installed, then run:
@@ -15,11 +16,17 @@ Use grunt to just-in-time compile coffeescript sources as you work:
     $ grunt watch
 
 
+## GitHub Pages Hosting
+
+This repo uses GitHub Pages to host the site at [visual555.tardate.com](http://visual555.tardate.com).
+
+
 ## Sinatra Web App
 
-A sinatra web app is included in this repo for the purpose of hosting at [visual555.tardate.com](http://visual555.tardate.com).
+There's also a sinatra wrapper that can be used to host the site at Heroku or similar services
+(what I used to do before moving to GitHub Pages).
 
-To run the app locally:
+To run the sinatra app locally:
 
     $ bundle install
     $ ruby web_app.rb
