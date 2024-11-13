@@ -2,23 +2,26 @@ GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.2.0)
+    daemons (1.4.1)
+    eventmachine (1.2.7)
     kgio (2.11.4)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    rack (3.1.8)
-    rack-protection (4.0.0)
+    rack (2.2.10)
+    rack-protection (3.2.0)
       base64 (>= 0.1.0)
-      rack (>= 3.0.0, < 4)
-    rack-session (2.0.0)
-      rack (>= 3.0.0)
+      rack (~> 2.2, >= 2.2.4)
     raindrops (0.20.1)
     ruby2_keywords (0.0.5)
-    sinatra (4.0.0)
+    sinatra (3.2.0)
       mustermann (~> 3.0)
-      rack (>= 3.0.0, < 4)
-      rack-protection (= 4.0.0)
-      rack-session (>= 2.0.0, < 3)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.2.0)
       tilt (~> 2.0)
+    thin (1.8.2)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (>= 1, < 3)
     tilt (2.4.0)
     unicorn (6.1.0)
       kgio (~> 2.6)
@@ -30,7 +33,8 @@ PLATFORMS
 
 DEPENDENCIES
   sinatra
+  thin
   unicorn
 
 BUNDLED WITH
-   2.5.11
+   2.5.23
