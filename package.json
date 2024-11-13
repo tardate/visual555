@@ -6,10 +6,10 @@
   "license": "MIT",
   "repository": "https://github.com/tardate/visual555",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-coffee": "^0.12.0",
-    "grunt-contrib-jasmine": "^0.8.1",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt": "^1.6.1",
+    "grunt-contrib-coffee": "^2.1.0",
+    "grunt-contrib-jasmine": "^4.0.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-contrib-watch": "^1.1.0"
   }
 }
